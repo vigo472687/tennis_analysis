@@ -1,0 +1,184 @@
+{
+  "name": "tennis-coach-team",
+  "version": "0.1.0",
+  "description": "Seven software roles explain tennis evidence and maintain a bounded local runtime. Workbench and WorkBuddy execution are verified separately.",
+  "author": {
+    "name": "Vigo",
+    "email": "prototype@example.invalid"
+  },
+  "expertType": "team",
+  "agentName": "tennis-coach-team-lead",
+  "agents": [
+    "./agents/tennis-coach-team-lead.md",
+    "./agents/tennis-vision-analyst.md",
+    "./agents/tennis-technique-coach.md",
+    "./agents/tennis-research-trainer.md",
+    "./agents/tennis-tactics-analyst.md",
+    "./agents/tennis-style-advisor.md",
+    "./agents/tennis-runtime-support.md"
+  ],
+  "teamInfo": {
+    "leadAgent": "tennis-coach-team-lead",
+    "memberAgents": [
+      "tennis-vision-analyst",
+      "tennis-technique-coach",
+      "tennis-research-trainer",
+      "tennis-tactics-analyst",
+      "tennis-style-advisor",
+      "tennis-runtime-support"
+    ]
+  },
+  "skills": [
+    "./skills/tennis-intake-routing",
+    "./skills/tennis-runtime-orchestration",
+    "./skills/tennis-video-analysis",
+    "./skills/tennis-evidence-reasoning",
+    "./skills/tennis-training-plan",
+    "./skills/tennis-coach-dialogue",
+    "./skills/tennis-report",
+    "./skills/tennis-feedback"
+  ],
+  "dependencies": {
+    "mcpServers": "./.mcp.json"
+  },
+  "displayName": {
+    "zh": "网球成长专家团",
+    "en": "Tennis Practice Team"
+  },
+  "profession": {
+    "zh": "网球成长专家团",
+    "en": "Tennis Practice Team"
+  },
+  "displayDescription": {
+    "zh": "六位网球业务角色解释证据、提供练习与反馈，第七位技术服务人员检查运行环境并通过受控工具恢复。真实能力按各阶段验收状态说明。",
+    "en": "Six tennis roles explain evidence and practice; runtime support checks and restores the project environment through bounded tools."
+  },
+  "avatar": "avatars/team.png",
+  "categoryId": "Sports",
+  "plugin": "tennis-coach-team",
+  "tags": [
+    {
+      "zh": "基础技术",
+      "en": "Technique"
+    },
+    {
+      "zh": "步伐时机",
+      "en": "Footwork"
+    },
+    {
+      "zh": "模拟原型",
+      "en": "Prototype"
+    }
+  ],
+  "defaultInitPrompt": {
+    "zh": "告诉我你的网球问题或本次想改善的动作；需要本地视频分析时，我会先检查运行环境。",
+    "en": "Tell me your tennis question or goal. Local video tasks begin with a runtime check."
+  },
+  "quickPrompts": [
+    {
+      "zh": "告诉我你的网球问题或本次想改善的动作；需要本地视频分析时，我会先检查运行环境。",
+      "en": "Tell me your tennis question or goal. Local video tasks begin with a runtime check."
+    },
+    {
+      "zh": "我总是等球来了才拉拍，应该如何练习读球和移动？",
+      "en": "How can I practice reading the ball and preparing while moving?"
+    },
+    {
+      "zh": "教练的建议和报告不一样，帮我准备下一轮具体讨论的问题。",
+      "en": "Help me discuss the specific differences between my coach's advice and this report."
+    }
+  ],
+  "members": [
+    {
+      "id": "tennis-coach-team-lead",
+      "name": {
+        "zh": "主理人",
+        "en": "Lead"
+      },
+      "profession": {
+        "zh": "任务编排",
+        "en": "Orchestration"
+      },
+      "avatar": "avatars/team-lead.png",
+      "role": "lead"
+    },
+    {
+      "id": "tennis-vision-analyst",
+      "name": {
+        "zh": "视觉解释员",
+        "en": "Vision"
+      },
+      "profession": {
+        "zh": "证据与可见性",
+        "en": "Evidence Interpretation"
+      },
+      "avatar": "avatars/vision.png",
+      "role": "member"
+    },
+    {
+      "id": "tennis-technique-coach",
+      "name": {
+        "zh": "技术步伐顾问",
+        "en": "Technique"
+      },
+      "profession": {
+        "zh": "动作与步伐",
+        "en": "Technique and Footwork"
+      },
+      "avatar": "avatars/technique.png",
+      "role": "member"
+    },
+    {
+      "id": "tennis-research-trainer",
+      "name": {
+        "zh": "研究训练员",
+        "en": "Research"
+      },
+      "profession": {
+        "zh": "来源与练习",
+        "en": "Research and Practice"
+      },
+      "avatar": "avatars/research.png",
+      "role": "member"
+    },
+    {
+      "id": "tennis-tactics-analyst",
+      "name": {
+        "zh": "基础战术顾问",
+        "en": "Tactics"
+      },
+      "profession": {
+        "zh": "回合选择",
+        "en": "Rally Choices"
+      },
+      "avatar": "avatars/tactics.png",
+      "role": "member"
+    },
+    {
+      "id": "tennis-style-advisor",
+      "name": {
+        "zh": "动作风格顾问",
+        "en": "Style"
+      },
+      "profession": {
+        "zh": "可迁移特征",
+        "en": "Transferable Features"
+      },
+      "avatar": "avatars/style.png",
+      "role": "member"
+    },
+    {
+      "id": "tennis-runtime-support",
+      "name": {
+        "zh": "技术服务人员",
+        "en": "Runtime Support"
+      },
+      "profession": {
+        "zh": "环境与运行维护",
+        "en": "Runtime Operations"
+      },
+      "avatar": "avatars/team.png",
+      "role": "member"
+    }
+  ]
+}

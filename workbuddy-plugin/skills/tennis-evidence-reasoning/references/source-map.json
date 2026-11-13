@@ -1,0 +1,16 @@
+{
+  "version":"0.1.0",
+  "rules":[
+    {"rule_id":"GS-CHAIN","source_ids":["SRC-MO-FH","SRC-TA-FUND"],"basis":"通用全身参与和阶段组织有公开教学背景；二维相对顺序、连续性与可见性闸门为本产品观察设计。","unverified":"无法据此计算真实合力或证明某种先后是唯一最佳动作。"},
+    {"rule_id":"GS-DROP","source_ids":["SRC-TA-FUND"],"basis":"球拍挥动阶段的教学背景；候选窗口和缺拍阻止评价为产品规则。","unverified":"不存在适用于全部站位、击球高度和握拍的统一下降阈值。"},
+    {"rule_id":"GS-WHIP","source_ids":["SRC-MO-FH","SRC-TA-FUND"],"basis":"随挥延续和阶段衔接的教学背景；鞭打是解释比喻，不是模型输出的实际加速度。","unverified":"不能从二维画面判断手腕负荷或处方主动甩腕。"},
+    {"rule_id":"GS-TIMING","source_ids":["SRC-LTA-FH","SRC-LTA-BH"],"basis":"读球、提前准备和向身前击球的入门指导；迎球感觉的练习表达与相对时间链为产品设计。","unverified":"不保证用户能在固定时点完成，也不要求每球抢上升期。"},
+    {"rule_id":"FW-TIMELINE","source_ids":["SRC-LTA-FOOT","SRC-LTA-FH"],"basis":"远距离覆盖、小步调整、站位与回位有资料背景；11事件同轴显示、缺失对象排除和重叠处理为产品观察规范。","unverified":"没有通过专家专业签署或视频准确率评估。"},
+    {"rule_id":"SV-SERVE","source_ids":["SRC-LTA-SERVE","SRC-TA-FUND"],"basis":"简化发球到组合动作的教学背景；重复性和候选事件是产品观察框架。","unverified":"肩部安全、拍速和实际旋转不在测量范围。"},
+    {"rule_id":"SV-FV","source_ids":["SRC-LTA-VOLLEY","SRC-TA-FUND"],"basis":"正手截击通用准备和短促控制；具体可见性闸门为产品规范。","unverified":"不构成所有截击必须零随挥的定律。"},
+    {"rule_id":"SV-BV","source_ids":["SRC-LTA-VOLLEY","SRC-TA-FUND"],"basis":"反手截击通用原则；手型与双手参与需要个人证据确认。","unverified":"不能把单反底线技术直接作为反手截击标准。"}
+  ],
+  "design_candidates":["全部训练卡的频率、剂量、进阶和复测次数","问题安全/影响/可改性/依赖排序及最多3项","通用目标骨架的外观与适配","ATP/WTA-like四分类的辅助解释；资料不支持按性别直接分配"],
+  "publish_gate":"每个个人问题需有效evidence_id、可回溯原时间、非目标示意、可见对象、rule_id、source_id、影响、充分度、限制及必要替代解释。只满足来源条件而没有个人证据时只能输出通用知识。",
+  "conflict_gate":"来源不一致且会改变建议时，列出适用场景差异和最小验证；不按来源数量投票，不隐去教练意见，不替用户断言教练教学有错。"
+}

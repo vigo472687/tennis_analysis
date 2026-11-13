@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' file:; media-src 'self' file:; style-src 'self'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>网球练习观察 · 本地报告</title>
+  <link rel="stylesheet" href="report.css">
+  <script src="report.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到报告正文</a>
+  <div class="prototype">{{SIMULATION}}</div>
+  <div class="report-shell">
+    <aside class="contents" aria-label="报告目录">
+      <a class="wordmark" href="#main">网球练习观察</a>
+      <nav><a href="#priorities">优先问题</a><a href="#practice">本周练习</a><a href="#evidence">原始证据</a><a href="#timing">步伐与时机</a><a href="#target">目标参考</a><a href="#sources">解释来源</a><a href="#retest">复测与反馈</a></nav>
+      <p class="muted">先理解一个变化，再用相同条件验证。</p>
+      <button type="button" data-print>打印报告</button>
+    </aside>
+    <main id="main" tabindex="-1">
+      <header class="report-header">{{SUMMARY}}</header>
+      <div class="first-read">
+        <section id="priorities" aria-labelledby="priorities-title"><h2 id="priorities-title">这次先关注什么</h2>{{PROBLEMS}}</section>
+        <section id="practice" aria-labelledby="practice-title"><h2 id="practice-title">本周怎么练</h2>{{TRAINING}}</section>
+      </div>
+      <section id="evidence" aria-labelledby="evidence-title"><div class="section-intro"><h2 id="evidence-title">回到画面验证</h2><p>当前证据保留原视频时间。慢动作仅改变播放速度。</p></div><div class="evidence-grid">{{EVIDENCE}}</div></section>
+      <section id="timing" aria-labelledby="timing-title"><h2 id="timing-title">步伐与击球，在同一时间轴</h2>{{TIMELINE}}<div class="metrics">{{METRICS}}</div></section>
+      <section id="target" aria-labelledby="target-title"><h2 id="target-title">可以学习的目标参考</h2><p class="target-note">目标为通用教学示意，不是当前证据，也不是你已经改善后的画面。</p><div class="target-reference">{{TARGET}}</div></section>
+      <section id="sources" aria-labelledby="sources-title"><h2 id="sources-title">这些解释从哪里来</h2><p>来源支持通用教学原则；个人结论仍需要本次证据。</p>{{SOURCES}}</section>
+      <section id="limits" aria-labelledby="limits-title"><h2 id="limits-title">这次还不能判断的内容</h2>{{LIMITATIONS}}</section>
+      <section id="retest" aria-labelledby="retest-title"><h2 id="retest-title">练过以后，怎样验证</h2>{{RETEST}}<p>完成次数只代表执行。条件不可比时只并列记录差异，不直接得出进步结论。</p><details><summary>报告不准、看不懂或练不起来</summary><p>回到WorkBuddy说明具体问题，可先复制下面的文字再修改。默认不附视频或聊天；主动选择材料后才导出。当前邮件外发仅为模拟。</p><textarea data-feedback aria-label="可复制的反馈草稿" rows="4">我对这份网球报告的反馈：
+具体问题：
+希望改成：
+是否愿意选择脱敏材料供复核：</textarea><button type="button" data-copy-feedback>复制文字草稿</button><p data-copy-status role="status" aria-live="polite"></p></details></section>
+      <footer><p>AI辅助教学 · 未由合作教练专业签署。出现疼痛、受伤、眩晕或恶化时停止相关训练并线下求助。</p><p>报告及公开记录保存在本地项目中。删除项目会移除本地可控内容，不能远程擦除导出、转发或外部收件副本。</p></footer>
+    </main>
+  </div>
+</body>
+</html>

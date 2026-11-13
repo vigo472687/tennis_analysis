@@ -1,0 +1,11 @@
+{
+  "version":"0.1.0",
+  "scope":"初学基础技术；不是高速发球或高难度截击处方",
+  "strokes":[
+    {"id":"serve","label":"发球","rule_id":"SV-SERVE","requires":["body","feet","ball","racket"],"observe":["准备、抛球候选、上举、挥拍和落地恢复的相对顺序","抛球相对身体位置的重复性与身体是否持续可控"],"teach":"先把抛球与可控挥拍分开练，再组合；用短动作和较低强度建立节奏，避免用更大后弯或强甩腕追求力量。","limits":"肩部负荷、真实拍速、旋转和精确内旋不能由普通二维影像直接测量；不把正手的降拍头时序套到发球。","on_missing":"球不可见不评抛球，拍不可见不评拍头，脚不可见不评落地；关键条件不足仅给重拍与通用说明。","drill_ids":["DR-SERVE-TOSS"],"sources":["SRC-LTA-SERVE","SRC-TA-FUND"]},
+    {"id":"forehand_volley","label":"正手截击","rule_id":"SV-FV","requires":["body","ball","racket"],"observe":["是否在球未落地前的可见窗口完成拦截","准备位置、短促前送及拍面朝向的可观察变化"],"teach":"准备时拍在身前，选择可控喂球，以短动作把球挡向目标；不要求复制底线正手的大环绕和降拍。","limits":"低截击、高截击和被动救球不能用统一拍头高度判断；单帧不能推断握拍细节。","on_missing":"球不可见无法确认截击事件；脚不可见不评上步和支撑，保留可靠上肢观察或重拍。","drill_ids":["DR-FV-BLOCK"],"sources":["SRC-LTA-VOLLEY","SRC-TA-FUND"]},
+    {"id":"backhand_volley","label":"反手截击","rule_id":"SV-BV","requires":["body","ball","racket"],"observe":["非持拍侧准备、辅助支持与短促前送的连续性","可见拦截窗口与恢复准备"],"teach":"先转肩和准备拍面，再用短动作控制方向；辅助手可以支持准备，不照搬单反底线的完整随挥。","limits":"不能由正反手侧别推定使用单手或双手，需用户确认及可见手部证据。","on_missing":"看不清手和拍不判断手的配合；缺球不判断是否落地前击中；缺脚不评支撑。","drill_ids":["DR-BV-BLOCK"],"sources":["SRC-LTA-VOLLEY","SRC-TA-FUND"]}
+  ],
+  "training_gate":"只在安全状态clear且用户同意练习时启用；疼痛、受伤、眩晕、恶化停止个性化训练，康复或不确定先请线下专业人员评估。",
+  "professional_review":"当前无合作教练，AI仅执行资料一致性与证据边界检查，不冒充最终专业审核。"
+}

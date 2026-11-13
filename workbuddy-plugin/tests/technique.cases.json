@@ -1,0 +1,11 @@
+{
+  "role":"tennis-technique-coach",
+  "validation":"scenario_walkthrough_only; actual WorkBuddy role/model execution pending",
+  "cases":[
+    {"id":"tech-chain","input":{"stroke":"double_backhand","visible":["body","feet","racket"],"evidence":"腿躯干启动后手臂出现可重复停顿"},"expected":{"rule_id":"GS-CHAIN","explain":"相对顺序和中断","practice":"低速连续准备与前送","forbid":["双手发力比","真实力矩","主动甩腕"]}},
+    {"id":"tech-incoming","input":{"stroke":"forehand","visible":["body","feet","ball","racket"],"complaint":"总等球到身边才拉拍"},"expected":{"rule_ids":["GS-TIMING","FW-TIMELINE"],"practice":"读球、跑动覆盖、移动转肩、小步调整、动态支撑、前送和恢复","forbid":["只说击球点在前","所有球落地前站死"]}},
+    {"id":"tech-no-ball","input":{"visible":["body","feet","racket"],"complaint":"我迎球晚了吗"},"expected":{"personal_timing_claim":false,"next":"说明缺球限制并提供通用慢喂练法或重拍"}},
+    {"id":"tech-too-many","input":{"candidate_issues":5,"priority_conflict":"步伐未稳却追求大幅风格"},"expected":{"max_issues":3,"defer":"大幅风格变化","first":"安全与移动时机"}},
+    {"id":"tech-outside-library","input":{"request":"职业级高速kick发球生物力学处方"},"expected":{"personal_prescription":false,"next":"超库降级并建议线下确认"}}
+  ]
+}

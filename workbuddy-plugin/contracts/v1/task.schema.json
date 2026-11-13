@@ -1,0 +1,297 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tennis.local/contracts/v1/task.schema.json",
+  "title": "Tennis task v1",
+  "definitions": {
+    "user": {
+      "type": "object",
+      "properties": {
+        "age_band": {
+          "type": "string",
+          "enum": [
+            "adult",
+            "youth"
+          ]
+        },
+        "handedness": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right",
+            "ambidextrous"
+          ]
+        },
+        "target_stroke": {
+          "type": "string",
+          "enum": [
+            "forehand",
+            "single_backhand",
+            "double_backhand",
+            "serve",
+            "forehand_volley",
+            "backhand_volley",
+            "footwork"
+          ]
+        },
+        "goal": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "exercise_background": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "safety": {
+          "type": "string",
+          "enum": [
+            "clear",
+            "pain",
+            "injury",
+            "dizziness",
+            "worsening",
+            "rehab",
+            "fatigue",
+            "uncertain"
+          ]
+        }
+      },
+      "required": [
+        "age_band",
+        "handedness",
+        "target_stroke",
+        "goal",
+        "exercise_background",
+        "safety"
+      ],
+      "additionalProperties": false
+    },
+    "create_input": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "fixture_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "media_ref": {
+          "$ref": "common.schema.json#/definitions/relative_path"
+        },
+        "user": {
+          "$ref": "task.schema.json#/definitions/user"
+        },
+        "consent": {
+          "$ref": "common.schema.json#/definitions/consent"
+        },
+        "primary_route": {
+          "type": "string",
+          "enum": [
+            "question_answer",
+            "tactics",
+            "technical_diagnosis",
+            "style_optimization"
+          ]
+        },
+        "auxiliary_routes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "question_answer",
+              "tactics",
+              "technical_diagnosis",
+              "style_optimization"
+            ]
+          },
+          "maxItems": 2,
+          "uniqueItems": true
+        },
+        "subject_id": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/definitions/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mirror_confirmed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "operation_id",
+        "fixture_id",
+        "media_ref",
+        "user",
+        "consent",
+        "primary_route",
+        "auxiliary_routes",
+        "subject_id",
+        "mirror_confirmed"
+      ],
+      "additionalProperties": false
+    },
+    "lookup": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "task_id",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "cancel_input": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "task_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "operation_id",
+        "task_id",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "waiting_for_capability",
+            "checking_input",
+            "analyzing",
+            "researching",
+            "rendering",
+            "complete",
+            "partial",
+            "reshoot_required",
+            "unsupported",
+            "safety_stop",
+            "failed",
+            "cancelled",
+            "deleted"
+          ]
+        },
+        "stage": {
+          "type": "string",
+          "enum": [
+            "input",
+            "media",
+            "analysis",
+            "research",
+            "render",
+            "export",
+            "delete",
+            "none"
+          ]
+        },
+        "checkpoints": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "checking_input",
+              "analyzing",
+              "researching",
+              "rendering"
+            ]
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "retained": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "maxItems": 200
+        },
+        "recovery_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "retry",
+              "reshoot",
+              "repair",
+              "cancel",
+              "delete",
+              "ask",
+              "none"
+            ]
+          },
+          "maxItems": 200
+        },
+        "workspace_ref": {
+          "$ref": "common.schema.json#/definitions/relative_path"
+        },
+        "simulation": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "task_id",
+        "version",
+        "state",
+        "stage",
+        "checkpoints",
+        "retained",
+        "recovery_actions",
+        "workspace_ref",
+        "simulation"
+      ],
+      "additionalProperties": false
+    },
+    "states": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "waiting_for_capability",
+        "checking_input",
+        "analyzing",
+        "researching",
+        "rendering",
+        "complete",
+        "partial",
+        "reshoot_required",
+        "unsupported",
+        "safety_stop",
+        "failed",
+        "cancelled",
+        "deleted"
+      ]
+    }
+  }
+}

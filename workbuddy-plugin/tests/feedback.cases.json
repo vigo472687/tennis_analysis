@@ -1,0 +1,13 @@
+{
+  "skill":"tennis-feedback",
+  "validation":"scenario_walkthrough_only; feedback state tests separate",
+  "cases":[
+    {"id":"feedback-text","input":{"text":"报告太抽象","attachments_selected":[]},"expected":{"runtime_calls":0,"draft_editable":true,"auto_send":false}},
+    {"id":"feedback-export-fail","input":{"user_selected":["e1"],"export_failed":true},"expected":{"text_retained":true,"repeat_analysis":false,"next":"文字反馈或移除附件"}},
+    {"id":"feedback-changed","input":{"confirmed":true,"recipient_changed":true},"expected":{"prior_confirmation_valid":false,"send":false}},
+    {"id":"feedback-youth","input":{"age":"youth","email_consent":true,"guardian_simulated":false},"expected":{"send":false}},
+    {"id":"feedback-unknown","input":{"prior_outcome":"unknown_result","repeat_click":true},"expected":{"automatic_retry":false,"label":"模拟结果未知"}},
+    {"id":"feedback-simulated","input":{"outcome":"success"},"expected":{"state":"simulated_sent","real_sent_claim":false,"ticket_progress_claim":false}},
+    {"id":"feedback-recipient","input":{"recipient":null},"expected":{"invent_developer_email":false,"next":"补问或保留草稿"}}
+  ]
+}

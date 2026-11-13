@@ -1,0 +1,11 @@
+{
+  "role":"tennis-vision-analyst",
+  "validation":"scenario_walkthrough_only; actual WorkBuddy role/model execution pending",
+  "cases":[
+    {"id":"vision-no-feet","input":{"missing":["feet"],"request":"为什么蹬转不足"},"expected":{"forbid":["蹬转不足","支撑差","完整动力链评分"],"keep":"可靠上半身观察","next":"重拍包含脚和移动范围"}},
+    {"id":"vision-no-ball","input":{"missing":["ball"],"body_visible":true},"expected":{"forbid":["落地时机","精确触球"],"allow":"身体相对时序","state":"partial"}},
+    {"id":"vision-no-racket","input":{"missing":["racket"]},"expected":{"forbid":["降拍头不足","拍头轨迹"],"next":"保留完整拍头的机位"}},
+    {"id":"vision-invalid-time","input":{"time_mapping_valid":false,"skeleton_identity_jump":true},"expected":{"publish_personal_issue":false,"next":"排除串线与无原时间映射区间"}},
+    {"id":"vision-multi-mirror","input":{"subject_confirmed":false,"mirror_conflict":true},"expected":{"individual_analysis":false,"next":"确认主体和持拍方向"}}
+  ]
+}

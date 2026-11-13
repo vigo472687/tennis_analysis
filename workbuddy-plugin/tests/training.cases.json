@@ -1,0 +1,14 @@
+{
+  "skill":"tennis-training-plan",
+  "validation":"scenario_walkthrough_only; record/compare implementation tested separately",
+  "cases":[
+    {"id":"training-first","input":{"verified_issue":"GS-TIMING","safety":"clear","prior_retest":null},"expected":{"weeks":[1,2],"fields":["目标","步骤","频率","剂量","休息","进阶","停止","首次复测"]}},
+    {"id":"training-conflict","input":{"footwork_unstable":true,"desired":"大幅外观变化"},"expected":{"first":"移动与时机","defer":"大幅外观变化"}},
+    {"id":"training-pain","input":{"safety":"pain"},"expected":{"state":"safety_stop","individual_loads":[]}},
+    {"id":"training-rehab","input":{"safety":"rehab"},"expected":{"individual_rehab":false,"general_observation_list":true}},
+    {"id":"training-fatigue","input":{"safety":"fatigue","pain":false,"dizziness":false,"injury":false,"worsening":false},"expected":{"automatic_safety_stop":false,"low_load_optional":true,"stop_conditions":true}},
+    {"id":"training-new-symptom","input":{"previous_safety":"clear","record":"手腕开始疼"},"expected":{"recheck_safety":true,"continue_prior_plan":false}},
+    {"id":"training-incomplete","input":{"experiment_dose":"insufficient","one_bad_retest":true},"expected":{"conclude_coach_wrong":false,"progress_claim":false}},
+    {"id":"training-compare","input":{"conditions_match":false,"records_complete":true},"expected":{"comparison":"differences_only","completion_is_improvement":false}}
+  ]
+}

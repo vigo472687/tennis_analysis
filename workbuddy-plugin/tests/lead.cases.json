@@ -1,0 +1,10 @@
+{
+  "role":"tennis-coach-team-lead",
+  "validation":"scenario_walkthrough_only; actual WorkBuddy role/model execution pending",
+  "cases":[
+    {"id":"lead-empty","input":{"text":"","video":null},"expected":{"action":"ask_for_task","runtime_requirement":"not_required","members":[]},"reason":"无任务不能预热本地能力或代用户选择目标。"},
+    {"id":"lead-multi","input":{"text":"分析正手、步伐、发球和打法外观","video":"fixture"},"expected":{"action":"choose_primary","primary_count":1,"auxiliary_max":2,"deferred_goals_retained":true},"reason":"超过本轮容量应取舍并保留诉求，不丢弃或全部冒充完成。"},
+    {"id":"lead-resume","input":{"runtime":"installed_stopped","original_operation_id":"op-1","prior_stage":"report_failed","analysis_checkpoint":"complete"},"expected":{"start_after_status":true,"resume_original_max":1,"repeat_media":false},"reason":"恢复报告不能重新分析媒体。"},
+    {"id":"lead-no-team-tool","input":{"text":"请六位专家共同审核","formal_team_tool":false},"expected":{"independent_review_claim":false,"label":"单代理降级"},"reason":"缺平台能力不能模拟成员已独立执行。"}
+  ]
+}

@@ -1,0 +1,37 @@
+# Local uploaded videos and generated analysis artifacts.
+/tmp/
+
+# Not part of the code snapshot: process docs, test videos / fixtures, model weights, tool config.
+/001 需求调研/
+/002 PRD/
+/003 SDD/
+/004 后端测试/
+/005 后端重构/
+/006 调试工作台联调/
+/fixtures/
+/integration/
+/models/
+/design-system/
+/AGENTS.md
+/.claude/
+/.codex/
+/.vscode/
+/.mcp.json
+/.codegraph/
+
+# Generated / local-only files.
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+node_modules/
+.build/
+local-backend/tests/.artifacts/
+local-backend/tests/*.debug
+local-backend/HANDOFF_RESULT.md
+local-backend/CLAUDE.md
+workbuddy-plugin/bin/
+workbuddy-plugin/fixtures/

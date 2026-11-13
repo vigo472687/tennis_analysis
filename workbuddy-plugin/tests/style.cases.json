@@ -1,0 +1,13 @@
+{
+  "role":"tennis-style-advisor",
+  "validation":"scenario_walkthrough_only; actual WorkBuddy role/model execution pending",
+  "cases":[
+    {"id":"style-name-only","input":{"favorite_player":"费德勒","favorite_action":null,"reason":null},"expected":{"generate_target":false,"next":"补问具体动作和喜欢原因"}},
+    {"id":"style-adult-gender","input":{"age":"adult","gender":"female","exercise":"beginner","visible_motion":[]},"expected":{"forehand_label":"无法判断","automatic_wta_assignment":false}},
+    {"id":"style-youth","input":{"age":"youth","gender":"male","request":"按男生选ATP"},"expected":{"gender_default":false,"next":"以动作、运动基础和安全适配解释"}},
+    {"id":"style-non-forehand","input":{"stroke":"serve"},"expected":{"atp_wta_label":null}},
+    {"id":"style-reference","input":{"target_kind":"generic_skeleton","evidence_ready":true},"expected":{"label":"通用目标示意，非真实改善结果","target_is_evidence":false,"photoreal_player_copy":false}},
+    {"id":"style-unsafe-preference","input":{"preference":"大幅后弯","safety":"pain"},"expected":{"class":"需要线下确认","individual_drill":false}},
+    {"id":"style-bad-target","input":{"target_wrong_handedness":true},"expected":{"show_target":false,"fallback":"文字特征"}}
+  ]
+}

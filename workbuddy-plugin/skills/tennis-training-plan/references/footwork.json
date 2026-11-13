@@ -1,0 +1,31 @@
+{
+  "version":"0.1.0",
+  "id":"footwork",
+  "label":"基础步伐与击球时序",
+  "status":"公开教学指导与产品观察设计；非职业生物力学测量",
+  "rule_id":"FW-TIMELINE",
+  "sources":["SRC-LTA-FOOT","SRC-LTA-FH","SRC-TA-FUND"],
+  "events":[
+    {"kind":"preparation","label":"准备","requires":["body"],"teach":"先注意对方和来球方向，保持可启动的准备姿态；有对方击球画面才讨论分腿垫步的相对时机。"},
+    {"kind":"first_step","label":"第一步","requires":["feet"],"teach":"读到方向后向落点区域启动；近距离以调整为主，远距离可用交叉步或正常跑动，避免全程小碎步追球。"},
+    {"kind":"main_movement","label":"主要移动","requires":["feet"],"teach":"先覆盖距离，同时保留身体与球的击球空间；不要交叉双脚硬扭转方向。"},
+    {"kind":"moving_backswing","label":"移动中拉拍","requires":["body"],"teach":"来球飞行时就开始转肩准备，移动和拉拍可以重叠，不必跑停后再拉拍。"},
+    {"kind":"bounce_candidate","label":"落地候选","requires":["ball"],"teach":"根据飞行和落地更新深浅判断；落地前准备好是简单喂球的目标，不是所有球都必须站死的硬规则。"},
+    {"kind":"adjustment","label":"调整","requires":["feet"],"teach":"接近击球区域后缩短调整步幅，修正距离；来球变化时允许继续调整。"},
+    {"kind":"support","label":"动态支撑","requires":["feet"],"teach":"观察支撑能否衔接挥拍与回位。站稳指可控支撑，包含开放式及跑动击球，不等于双脚静止。"},
+    {"kind":"racket_drop","label":"降拍头","requires":["racket"],"teach":"有支撑和击球空间后观察拍头从准备转向前挥的过程，允许与腿躯干动作重叠。"},
+    {"kind":"leg_drive_rotation","label":"蹬转","requires":["feet","body"],"teach":"只说明腿、髋和躯干相对启动与延续；从影像不能量出真实蹬地力。"},
+    {"kind":"forward_swing","label":"前挥迎球","requires":["body"],"teach":"让身体和拍子朝可控目标连续前送；球拍或球不可见时不推断触球瞬间。"},
+    {"kind":"recovery","label":"恢复","requires":["feet"],"teach":"完成随挥后恢复可启动姿态；结合来球方向和下一拍需求选择回位，不一律回几何中心。"}
+  ],
+  "ordering_policy":"以上为阅读与教学目录，不是每次击球必须严格不重叠的固定顺序；报告按原始时间实际排序并标注重叠、缺失及候选事件。",
+  "visibility_gates":[
+    {"missing":"feet","exclude":["first_step","main_movement","adjustment","support","leg_drive_rotation","recovery"],"guidance":"后方斜侧固定机位，完整包含双脚、移动范围与拍头。"},
+    {"missing":"ball","exclude":["bounce_candidate","incoming_timing","exact_contact"],"guidance":"加大取景覆盖球从过网到击球的路径，勿只拍身体。"},
+    {"missing":"racket","exclude":["racket_drop","racket_head_trajectory"],"guidance":"保留完整球拍和随挥，避免拍头出框。"},
+    {"missing":"body","exclude":["preparation","moving_backswing","leg_drive_rotation","forward_swing"],"guidance":"调整距离和光线，确保身体在连续帧可辨认。"}
+  ],
+  "decision":"只要某结论依赖的对象不可见，就不发布该结论；有可靠剩余证据为partial，否则reshoot_required。",
+  "drill_ids":["DR-FOOT-TIMING"],
+  "no_go":["以脚出框推断蹬转不足","以球落地为所有人的固定站稳截止点","以骨架补全球和拍头轨迹","把完成次数当成技术进步"]
+}

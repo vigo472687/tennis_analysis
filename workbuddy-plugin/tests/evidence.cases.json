@@ -1,0 +1,13 @@
+{
+  "skill":"tennis-evidence-reasoning",
+  "validation":"scenario_walkthrough_only; renderer hard validation separate",
+  "cases":[
+    {"id":"evidence-too-many","input":{"issues":4},"expected":{"publish_max":3,"retain_deferred_reason":true}},
+    {"id":"evidence-expired","input":{"resource_missing":true,"time_mapping_valid":false},"expected":{"publish_affected_issue":false,"next":"修复或重拍"}},
+    {"id":"evidence-target","input":{"only_evidence_kind":"target_pose"},"expected":{"publish_personal_issue":false}},
+    {"id":"evidence-source-only","input":{"official_article":true,"user_video_evidence":[]},"expected":{"personal_diagnosis":false,"general_answer_with_source":true}},
+    {"id":"evidence-relative","input":{"metric":"relative_order","force_request":true},"expected":{"force_value":null,"explain_definition_reference_limits":true}},
+    {"id":"evidence-conflict","input":{"source_rules_conflict":true,"direction_changes":true},"expected":{"majority_vote":false,"single_certain_answer":false,"next":"补问适用场景和最小验证"}},
+    {"id":"evidence-alternative","input":{"pause_visible":true,"feeding_pause_possible":true},"expected":{"alternative_explanation_required":true,"certain_power_deficit":false}}
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tennis.local/contracts/v1/media.schema.json",
+  "title": "Tennis media v1",
+  "definitions": {
+    "summary": {
+      "type": "object",
+      "properties": {
+        "container": {
+          "type": "string",
+          "enum": [
+            "mp4",
+            "mov",
+            "unknown"
+          ]
+        },
+        "codec": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "duration_s": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fps": {
+          "type": "number",
+          "minimum": 0
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rotation": {
+          "type": "string",
+          "enum": [
+            "0",
+            "90",
+            "180",
+            "270",
+            "unknown"
+          ]
+        },
+        "slow_motion": {
+          "type": "string",
+          "enum": [
+            "yes",
+            "no",
+            "unknown"
+          ]
+        },
+        "hdr": {
+          "type": "string",
+          "enum": [
+            "yes",
+            "no",
+            "unknown"
+          ]
+        },
+        "device_source": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "panorama": {
+          "type": "string",
+          "enum": [
+            "flat",
+            "native",
+            "unknown"
+          ]
+        },
+        "support": {
+          "type": "string",
+          "enum": [
+            "supported",
+            "unsupported",
+            "unable"
+          ]
+        },
+        "observation_kind": {
+          "type": "string",
+          "enum": [
+            "measured",
+            "simulated"
+          ]
+        }
+      },
+      "required": [
+        "container",
+        "codec",
+        "duration_s",
+        "fps",
+        "width",
+        "height",
+        "rotation",
+        "slow_motion",
+        "hdr",
+        "device_source",
+        "panorama",
+        "support",
+        "observation_kind"
+      ],
+      "additionalProperties": false
+    },
+    "quality": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "limited",
+            "fail"
+          ]
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "$ref": "common.schema.json#/definitions/id"
+              },
+              "object": {
+                "type": "string",
+                "enum": [
+                  "body",
+                  "feet",
+                  "ball",
+                  "racket",
+                  "subject",
+                  "direction",
+                  "lighting",
+                  "media"
+                ]
+              },
+              "impact": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048
+              },
+              "evidence_ids": {
+                "type": "array",
+                "items": {
+                  "$ref": "common.schema.json#/definitions/id"
+                },
+                "maxItems": 200
+              },
+              "reshoot_guidance": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "code",
+              "object",
+              "impact",
+              "evidence_ids",
+              "reshoot_guidance"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 200
+        },
+        "unavailable_objects": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "body",
+              "feet",
+              "ball",
+              "racket"
+            ]
+          },
+          "maxItems": 200
+        },
+        "subject_candidates": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/definitions/id"
+          },
+          "maxItems": 200
+        },
+        "time_mapping_valid": {
+          "type": "boolean"
+        },
+        "media": {
+          "$ref": "media.schema.json#/definitions/summary"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "analysis.schema.json#/definitions/evidence"
+          },
+          "maxItems": 200
+        },
+        "simulation": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "status",
+        "issues",
+        "unavailable_objects",
+        "subject_candidates",
+        "time_mapping_valid",
+        "media",
+        "evidence",
+        "simulation"
+      ],
+      "additionalProperties": false
+    },
+    "time_mapping": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "normalized_s": {
+            "type": "number",
+            "minimum": 0
+          },
+          "original_s": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "normalized_s",
+          "original_s"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 200,
+      "minItems": 1
+    }
+  }
+}

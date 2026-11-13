@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "tennis-local": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["./bin/tennis-bridge.mjs"],
+      "cwd": ".",
+      "runtime": {"type": "node", "version": ">=20"},
+      "env": {"TENNIS_BACKEND": "fixture"},
+      "x-workbuddy": {
+        "displayName": {"zh": "网球本地分析原型", "en": "Tennis Local Prototype"},
+        "description": {"zh": "固定样本演示；分析和外发均为模拟。连接器工作目录须指向本专家团包。", "en": "Simulated fixtures. Set connector working directory to this package."},
+        "auth": {"type": "none"}
+      }
+    }
+  }
+}

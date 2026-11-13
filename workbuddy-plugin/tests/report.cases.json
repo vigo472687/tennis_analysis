@@ -1,0 +1,13 @@
+{
+  "skill":"tennis-report",
+  "validation":"scenario_walkthrough_only; render/UI tests separate",
+  "cases":[
+    {"id":"report-state-partial","input":{"requested_feet":true,"feet_missing":true},"expected":{"state":"partial","claim_complete":false,"list_unknown_and_reshoot":true}},
+    {"id":"report-safe","input":{"state":"safety_stop","training_present":true},"expected":{"render":false}},
+    {"id":"report-resource","input":{"evidence_resource_missing":true},"expected":{"publish_dependent_issue":false,"repeat_analysis":false}},
+    {"id":"report-target","input":{"target":"generic_skeleton"},"expected":{"separate_label":true,"target_is_evidence":false,"photoreal_enabled":false}},
+    {"id":"report-views","input":{"views":["mobile","desktop","print","offline"]},"expected":{"first":["状态","最多三问题","本周练习"],"source_jump":true,"current_target_distinct":true}},
+    {"id":"report-cancelled","input":{"state":"cancelled"},"expected":{"claim_complete":false,"retained_evidence_explained":true}},
+    {"id":"report-rehab","input":{"safety":"rehab"},"expected":{"individual_training":null,"general_info_only":true}}
+  ]
+}

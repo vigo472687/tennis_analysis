@@ -1,0 +1,208 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tennis.local/contracts/v1/deletion.schema.json",
+  "title": "Tennis deletion v1",
+  "definitions": {
+    "export_input": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "task_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "selected_resource_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/definitions/id"
+          },
+          "maxItems": 200,
+          "minItems": 1
+        },
+        "consent": {
+          "$ref": "common.schema.json#/definitions/consent"
+        }
+      },
+      "required": [
+        "operation_id",
+        "task_id",
+        "version",
+        "selected_resource_ids",
+        "consent"
+      ],
+      "additionalProperties": false
+    },
+    "export_result": {
+      "type": "object",
+      "properties": {
+        "package_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "manifest": {
+          "$ref": "common.schema.json#/definitions/resource"
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/definitions/resource"
+          },
+          "maxItems": 200
+        },
+        "redacted": {
+          "type": "boolean"
+        },
+        "simulation": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "package_id",
+        "manifest",
+        "resources",
+        "redacted",
+        "simulation"
+      ],
+      "additionalProperties": false
+    },
+    "delete_input": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "task_id": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/definitions/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "task",
+            "all_demo"
+          ]
+        },
+        "confirmed": {
+          "const": true
+        }
+      },
+      "required": [
+        "operation_id",
+        "task_id",
+        "version",
+        "scope",
+        "confirmed"
+      ],
+      "additionalProperties": false
+    },
+    "delete_result": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "resource_id": {
+                "$ref": "common.schema.json#/definitions/id"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "deleted",
+                  "failed",
+                  "outside_control",
+                  "not_found"
+                ]
+              },
+              "code": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "resource_id",
+              "status",
+              "code"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 200
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "external_copies_uncontrolled": {
+          "const": true
+        },
+        "runtime_uninstalled": {
+          "const": false
+        },
+        "simulation": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "operation_id",
+        "items",
+        "complete",
+        "external_copies_uncontrolled",
+        "runtime_uninstalled",
+        "simulation"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "x-tools": [
+    {
+      "name": "export_review_package",
+      "method": "review.export",
+      "input": "export_input",
+      "output": "export_result",
+      "side_effect": true,
+      "purposes": [
+        "diagnostics"
+      ]
+    },
+    {
+      "name": "delete_analysis_data",
+      "method": "analysis.delete",
+      "input": "delete_input",
+      "output": "delete_result",
+      "side_effect": true,
+      "purposes": []
+    }
+  ]
+}

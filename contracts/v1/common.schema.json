@@ -1,0 +1,277 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tennis.local/contracts/v1/common.schema.json",
+  "title": "Tennis common v1",
+  "definitions": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*$"
+    },
+    "relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|/)\\.\\.(?:/|$))[^\\u0000]+$"
+    },
+    "state_of_value": {
+      "type": "string",
+      "enum": [
+        "observed",
+        "unknown",
+        "not_provided",
+        "not_visible",
+        "not_applicable",
+        "insufficient_evidence"
+      ]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "insufficient_evidence"
+      ]
+    },
+    "resource": {
+      "type": "object",
+      "properties": {
+        "resource_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "path": {
+          "$ref": "common.schema.json#/definitions/relative_path"
+        },
+        "mime": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "sha256": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64,
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "input_copy",
+            "evidence_frame",
+            "evidence_clip",
+            "trajectory",
+            "target_pose",
+            "report",
+            "diagnostics",
+            "record"
+          ]
+        },
+        "simulation": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "resource_id",
+        "path",
+        "mime",
+        "sha256",
+        "size_bytes",
+        "kind",
+        "simulation"
+      ],
+      "additionalProperties": false
+    },
+    "consent": {
+      "type": "object",
+      "properties": {
+        "consent_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "task_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "purposes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "analysis",
+              "save",
+              "retest",
+              "network",
+              "share",
+              "email",
+              "diagnostics",
+              "improvement",
+              "training_data"
+            ]
+          },
+          "maxItems": 9,
+          "uniqueItems": true
+        },
+        "text_version": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "confirmed": {
+          "type": "boolean"
+        },
+        "guardian_simulated": {
+          "type": "boolean"
+        },
+        "recipient_digest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "materials_digest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "consent_id",
+        "task_version",
+        "purposes",
+        "text_version",
+        "confirmed",
+        "guardian_simulated",
+        "recipient_digest",
+        "materials_digest"
+      ],
+      "additionalProperties": false
+    },
+    "request": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "1.1.0"
+        },
+        "request_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "operation_id": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/definitions/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 96,
+          "pattern": "^[a-z]+\\.[a-z_]+$"
+        },
+        "params": {
+          "type": "object"
+        },
+        "simulation": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "contract_version",
+        "request_id",
+        "operation_id",
+        "method",
+        "params",
+        "simulation"
+      ],
+      "additionalProperties": false
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "contract_version": {
+          "const": "1.1.0"
+        },
+        "request_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "result": {},
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "error.schema.json#/definitions/error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "simulation": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "contract_version",
+        "request_id",
+        "ok",
+        "result",
+        "error",
+        "simulation"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "ok": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "error": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "result": {
+                "type": "null"
+              },
+              "error": {
+                "$ref": "error.schema.json#/definitions/error"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tennis.local/contracts/v1/feedback.schema.json",
+  "title": "Tennis feedback v1",
+  "definitions": {
+    "state": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "ready_to_send",
+        "sending",
+        "sent",
+        "send_failed",
+        "withdrawn",
+        "unknown_result",
+        "simulated_sent"
+      ]
+    },
+    "draft": {
+      "type": "object",
+      "properties": {
+        "feedback_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "task_id": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/definitions/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "enum": [
+            "inaccurate",
+            "unclear_evidence",
+            "unusable_training",
+            "coach_conflict",
+            "style_mismatch",
+            "technical_fault",
+            "suggestion"
+          ]
+        },
+        "recipient": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 320
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "body": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "selected_resources": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/definitions/resource"
+          },
+          "maxItems": 200
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "ready_to_send",
+            "sending",
+            "send_failed",
+            "withdrawn",
+            "unknown_result",
+            "simulated_sent"
+          ]
+        },
+        "confirmed_digest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operation_id": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/definitions/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "simulation": {
+          "const": true
+        }
+      },
+      "required": [
+        "feedback_id",
+        "task_id",
+        "reason",
+        "recipient",
+        "subject",
+        "body",
+        "selected_resources",
+        "state",
+        "confirmed_digest",
+        "operation_id",
+        "simulation"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

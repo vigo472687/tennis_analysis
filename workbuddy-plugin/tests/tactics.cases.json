@@ -1,0 +1,9 @@
+{
+  "role":"tennis-tactics-analyst",
+  "validation":"scenario_walkthrough_only; actual WorkBuddy role/model execution pending",
+  "cases":[
+    {"id":"tactics-single-shot","input":{"clip":"孤立正手挥拍","opponent_visible":false},"expected":{"personal_rally_tactic":false,"fallback":"技术或通用问答","ask":"包含来球和对方位置的完整回合"}},
+    {"id":"tactics-rally","input":{"continuous_rally":true,"ball_visible":true,"positions_visible":true,"situation":"受压击球"},"expected":{"output":["实际选择与证据","基础原则来源","一个替代选择及代价","限制"],"win_rate_prediction":false}},
+    {"id":"tactics-one-error","input":{"single_out_ball":true,"context_unknown":true},"expected":{"conclude_tactic_wrong":false,"output":"补充情境和替代解释"}}
+  ]
+}

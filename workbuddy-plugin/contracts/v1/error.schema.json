@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tennis.local/contracts/v1/error.schema.json",
+  "title": "Tennis error v1",
+  "definitions": {
+    "error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[A-Z][A-Z0-9_]+$"
+        },
+        "stage": {
+          "type": "string",
+          "enum": [
+            "runtime",
+            "input",
+            "media",
+            "analysis",
+            "render",
+            "export",
+            "delete"
+          ]
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "user_action": {
+          "type": "string",
+          "enum": [
+            "retry",
+            "reshoot",
+            "confirm",
+            "repair",
+            "export",
+            "delete",
+            "none"
+          ]
+        },
+        "retained": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "maxItems": 200
+        },
+        "details_ref": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/definitions/relative_path"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "simulation": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "code",
+        "stage",
+        "retryable",
+        "user_action",
+        "retained",
+        "details_ref",
+        "simulation"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

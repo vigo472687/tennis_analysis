@@ -1,0 +1,40 @@
+{
+  "name": "tennis-workbuddy-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "test": "tsc && node --test .build/tests/*.test.js",
+    "build": "node build.mjs",
+    "debug-console": "tsc && node .build/src/debug-console.js",
+    "phase1-console": "tsc && node .build/src/phase1-console.js",
+    "phase2-console": "tsc && node .build/src/phase1-console.js",
+    "phase3-console": "tsc && node .build/src/phase1-console.js",
+    "phase4-console": "tsc && node .build/src/phase1-console.js",
+    "phase5-console": "tsc && node .build/src/phase1-console.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "ajv": "8.20.0",
+    "lucide-static": "0.468.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.19.9",
+    "esbuild": "0.28.2",
+    "typescript": "5.9.3"
+  },
+  "dependencyNotes": {
+    "lucide-static": "ISC; locally served, consistent interface icons; no remote icon requests",
+    "@modelcontextprotocol/sdk": "MIT; official MCP transport; avoids a hand-written MCP implementation",
+    "ajv": "MIT; draft-07 JSON Schema validation shared with Python; no runtime network",
+    "@types/node": "MIT; Node 20 baseline types; development only",
+    "esbuild": "MIT; relocatable local bundle; development only; native build binary",
+    "typescript": "Apache-2.0; static type checks; development only"
+  }
+}

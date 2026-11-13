@@ -1,0 +1,31 @@
+import {createPublicStore,requireCondition as require,fingerprint} from '../../tennis-training-plan/scripts/records.mjs';
+import fs from 'node:fs';import path from 'node:path';import {randomUUID} from 'node:crypto';
+const id=x=>typeof x==='string'&&/^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$/.test(x);
+const reasons=['inaccurate','unclear_evidence','unusable_training','coach_conflict','style_mismatch','technical_fault','suggestion'];
+function validateContent(x){
+  require(id(x.feedback_id)&&(x.task_id===null||id(x.task_id))&&reasons.includes(x.reason),'FEEDBACK_ID_INVALID');
+  for(const [k,max]of [['recipient',320],['subject',200],['body',20000]])require(typeof x[k]==='string'&&x[k].length>=1&&x[k].length<=max,'FEEDBACK_CONTENT_INVALID');
+  require(!/[\r\n]/.test(x.recipient)&&!/[\r\n]/.test(x.subject),'FEEDBACK_HEADER_INVALID');
+  require(Array.isArray(x.selected_resources)&&x.selected_resources.length<=200,'FEEDBACK_RESOURCES_INVALID');
+  for(const r of x.selected_resources)require(r&&id(r.resource_id)&&r.kind!=='input_copy'&&/^[a-f0-9]{64}$/.test(r.sha256)&&Number.isInteger(r.size_bytes)&&r.size_bytes>=0&&typeof r.path==='string'&&!r.path.startsWith('/')&&!r.path.split('/').includes('..')&&r.simulation===true,'FEEDBACK_RESOURCE_INVALID');
+}
+function content(x){return {feedback_id:x.feedback_id,task_id:x.task_id,reason:x.reason,recipient:x.recipient,subject:x.subject,body:x.body,selected_resources:structuredClone(x.selected_resources)};}
+function feedbackStore(root){const canonical=fs.realpathSync(root),file=path.join(canonical,'tennis-feedback-state.json');const check=()=>{require(fs.existsSync(canonical)&&fs.realpathSync(canonical)===canonical,'FEEDBACK_WORKSPACE_UNAVAILABLE');if(fs.existsSync(file))require(!fs.lstatSync(file).isSymbolicLink(),'FEEDBACK_STATE_SYMLINK');};return {read(_name,fallback){check();return fs.existsSync(file)?JSON.parse(fs.readFileSync(file,'utf8')):structuredClone(fallback);},write(_name,value){check();const tmp=file+'.'+randomUUID()+'.tmp';fs.writeFileSync(tmp,JSON.stringify(value,null,2)+'\n',{flag:'wx',mode:0o600});check();fs.renameSync(tmp,file);}};}
+export class FeedbackController {
+  constructor(context=null){this.context=context;this.store=context?.feedbackRoot?feedbackStore(context.feedbackRoot):context?createPublicStore(context):null;this.data=this.store?.read('feedback-state.json',{drafts:[],attempts:[]})||{drafts:[],attempts:[]};require(Array.isArray(this.data.drafts)&&Array.isArray(this.data.attempts),'FEEDBACK_STATE_INVALID');let interrupted=false;for(const d of this.data.drafts)if(d.state==='sending'){d.state='unknown_result';interrupted=true;}if(interrupted)this.persist();}
+  persist(){this.store?.write('feedback-state.json',this.data);}
+  get(feedbackId){const d=this.data.drafts.find(x=>x.feedback_id===feedbackId);require(d,'FEEDBACK_UNKNOWN');return structuredClone(d);}
+  create(input){validateContent(input);require(!this.data.drafts.some(x=>x.feedback_id===input.feedback_id),'FEEDBACK_ID_CONFLICT');if(this.context?.task_id)require(input.task_id===this.context.task_id,'FEEDBACK_TASK_MISMATCH');const draft={...content(input),state:'draft',confirmed_digest:null,operation_id:null,simulation:true};this.data.drafts.push(draft);this.persist();return structuredClone(draft);}
+  edit(feedbackId,changes){const previous=this.get(feedbackId);require(['draft','ready_to_send'].includes(previous.state),'FEEDBACK_ALREADY_ATTEMPTED');require(Object.keys(changes).every(k=>['reason','recipient','subject','body','selected_resources'].includes(k)),'FEEDBACK_EDIT_FORBIDDEN');const next={...previous,...structuredClone(changes),state:'draft',confirmed_digest:null};validateContent(next);this.data.drafts[this.data.drafts.findIndex(x=>x.feedback_id===feedbackId)]=next;this.persist();return structuredClone(next);}
+  confirm(feedbackId,confirmation){const draft=this.get(feedbackId);require(['draft','ready_to_send'].includes(draft.state),'FEEDBACK_ALREADY_ATTEMPTED');validateContent(draft);require(confirmation?.confirmed===true&&confirmation.email_purpose===true&&confirmation.simulation_acknowledged===true,'FEEDBACK_CONFIRMATION_REQUIRED');require(confirmation.age_band==='adult'||(confirmation.age_band==='youth'&&confirmation.guardian_simulated===true),'GUARDIAN_CONFIRMATION_REQUIRED');require(!draft.selected_resources.length||(confirmation.diagnostics_purpose===true&&confirmation.materials_reviewed===true),'DIAGNOSTIC_CONFIRMATION_REQUIRED');const next={...draft,state:'ready_to_send',confirmed_digest:fingerprint(content(draft))};this.data.drafts[this.data.drafts.findIndex(x=>x.feedback_id===feedbackId)]=next;this.persist();return structuredClone(next);}
+  simulate(feedbackId,operationId,outcome='success'){
+    require(id(operationId)&&['success','failure','unknown'].includes(outcome),'FEEDBACK_SIMULATION_INVALID');const draft=this.get(feedbackId),prior=this.data.attempts.find(x=>x.operation_id===operationId);
+    if(prior){require(prior.feedback_id===feedbackId,'OPERATION_CONFLICT');return this.get(feedbackId);}
+    require(!this.data.attempts.some(x=>x.feedback_id===feedbackId),'FEEDBACK_ALREADY_ATTEMPTED');require(draft.state==='ready_to_send'&&draft.confirmed_digest===fingerprint(content(draft)),'FEEDBACK_CONFIRMATION_REQUIRED');
+    require(this.store,'FEEDBACK_PERSISTENCE_REQUIRED');
+    const index=this.data.drafts.findIndex(x=>x.feedback_id===feedbackId);this.data.attempts.push({operation_id:operationId,feedback_id:feedbackId,digest:draft.confirmed_digest});this.data.drafts[index]={...draft,state:'sending',operation_id:operationId};this.persist();
+    this.data.drafts[index].state={success:'simulated_sent',failure:'send_failed',unknown:'unknown_result'}[outcome];this.persist();return this.get(feedbackId);
+  }
+  withdraw(feedbackId){const d=this.get(feedbackId);require(['draft','ready_to_send'].includes(d.state),'FEEDBACK_ALREADY_ATTEMPTED');this.data.drafts[this.data.drafts.findIndex(x=>x.feedback_id===feedbackId)]={...d,state:'withdrawn',confirmed_digest:null};this.persist();return this.get(feedbackId);}
+  label(feedbackId){return {draft:'模拟反馈草稿，尚未发送',ready_to_send:'已确认，等待模拟发送',sending:'模拟发送中',simulated_sent:'模拟已发送，未发送真实邮件',send_failed:'模拟发送失败，文字草稿已保留',unknown_result:'模拟结果未知，不会自动重发',withdrawn:'已撤回模拟反馈'}[this.get(feedbackId).state];}
+}

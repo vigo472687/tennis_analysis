@@ -1,0 +1,15 @@
+{
+  "skill":"tennis-video-analysis",
+  "validation":"scenario_walkthrough_only; underlying fixture/backend integration separate",
+  "cases":[
+    {"id":"video-long","input":{"duration_s":181},"expected":{"analyze":false,"state":"unsupported"}},
+    {"id":"video-format","input":{"extension":"mp4","content":"corrupt"},"expected":{"trust_extension":false,"analyze":false}},
+    {"id":"video-panorama","input":{"native_panorama":true},"expected":{"state":"unsupported","next":"导出平面视频"}},
+    {"id":"video-missing","input":{"missing":["feet","ball","racket"]},"expected":{"infer_support":false,"infer_bounce":false,"infer_drop":false,"next":"针对性重拍"}},
+    {"id":"video-unknown","input":{"stroke":"unable"},"expected":{"force_forehand":false}},
+    {"id":"video-subject","input":{"subject_candidates":["p1","p2"],"subject_id":null},"expected":{"individual_analysis":false,"next":"选择主体"}},
+    {"id":"video-cancel","input":{"task_state":"analyzing","cancel_repeated":true},"expected":{"state":"cancelled","retained_checkpoints":true,"delete_original":false}},
+    {"id":"video-time","input":{"time_mapping_valid":false},"expected":{"publish_issue":false,"target_as_evidence":false}},
+    {"id":"video-live-upload","input":{"mode":"fixture","media":"real-user-selected.mov"},"expected":{"claim_real_pose":false,"silently_substitute_fixture":false}}
+  ]
+}

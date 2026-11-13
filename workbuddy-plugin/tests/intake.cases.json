@@ -1,0 +1,16 @@
+{
+  "skill":"tennis-intake-routing",
+  "validation":"scenario_walkthrough_only; actual model execution pending",
+  "cases":[
+    {"id":"intake-text","input":{"text":"如何提前拉拍","video":null,"ntrp":null},"expected":{"route":"question_answer","runtime":"not_required","require_ntrp":false}},
+    {"id":"intake-vague","input":{"text":"看看我的情况"},"expected":{"runtime":"uncertain","start_backend":false,"next":"补问具体任务"}},
+    {"id":"intake-video","input":{"text":"分析这个双反","video":"selected"},"expected":{"route":"technical_diagnosis","runtime":"required","real_video_claim_in_fixture_mode":false}},
+    {"id":"intake-multi","input":{"goals":["动作","战术","风格","发球"]},"expected":{"primary":1,"auxiliary_max":2,"retained_deferred":true}},
+    {"id":"intake-no-network","input":{"network_consent":false,"text":"解释分腿垫步"},"expected":{"answer_with_existing_sources":true,"network":false,"start_backend":false}},
+    {"id":"intake-youth","input":{"age":"youth","sensitive_action":"export","guardian_simulated":false},"expected":{"export":false,"next":"模拟监护确认","identity_verified_claim":false}},
+    {"id":"intake-pain","input":{"safety":"pain","request":"给轻量训练"},"expected":{"training":false,"next":"停止相关训练并线下求助"}},
+    {"id":"intake-style","input":{"favorite_player":"纳达尔","specific_action":null},"expected":{"generate_target":false,"next":"具体动作和喜欢原因"}},
+    {"id":"intake-report-retry","input":{"analysis":"complete","report":"failed"},"expected":{"repeat_analysis":false,"retry_report":true}},
+    {"id":"intake-training-consent","input":{"analysis_consent":true},"expected":{"training_data":false,"improvement":false,"email":false}}
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tennis.local/contracts/v1/runtime.schema.json",
+  "title": "Tennis runtime v1",
+  "definitions": {
+    "status_input": {
+      "type": "object",
+      "properties": {
+        "runtime_requirement": {
+          "type": "string",
+          "enum": [
+            "required",
+            "not_required",
+            "uncertain"
+          ]
+        }
+      },
+      "required": [
+        "runtime_requirement"
+      ],
+      "additionalProperties": false
+    },
+    "prepare_input": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "consent_confirmed": {
+          "const": true
+        },
+        "target_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "intent": {
+          "type": "string",
+          "enum": [
+            "prepare",
+            "upgrade",
+            "rollback"
+          ]
+        },
+        "scope_digest": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "operation_id",
+        "consent_confirmed",
+        "target_version",
+        "intent",
+        "scope_digest"
+      ],
+      "additionalProperties": false
+    },
+    "start_input": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "runtime_requirement": {
+          "const": "required"
+        }
+      },
+      "required": [
+        "operation_id",
+        "runtime_requirement"
+      ],
+      "additionalProperties": false
+    },
+    "repair_input": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "consent_confirmed": {
+          "const": true
+        },
+        "scope_digest": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "operation_id",
+        "consent_confirmed",
+        "scope_digest"
+      ],
+      "additionalProperties": false
+    },
+    "uninstall_input": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "confirmed": {
+          "const": true
+        },
+        "keep_project_data": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "operation_id",
+        "confirmed",
+        "keep_project_data"
+      ],
+      "additionalProperties": false
+    },
+    "result": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "not_initialized",
+            "awaiting_consent",
+            "preparing",
+            "verifying",
+            "installed_stopped",
+            "starting",
+            "ready",
+            "repair_required",
+            "upgrading",
+            "uninstalling"
+          ]
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "backend": {
+          "type": "string",
+          "enum": [
+            "fixture",
+            "python"
+          ]
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "$ref": "common.schema.json#/definitions/id"
+              },
+              "passed": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "code",
+              "passed"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 200
+        },
+        "retained": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "maxItems": 200
+        },
+        "simulation": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "state",
+        "version",
+        "backend",
+        "checks",
+        "retained",
+        "simulation"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "x-tools": [
+    {
+      "name": "runtime_status",
+      "method": "runtime.status",
+      "input": "status_input",
+      "output": "result",
+      "side_effect": false,
+      "purposes": []
+    },
+    {
+      "name": "runtime_prepare",
+      "method": "runtime.prepare",
+      "input": "prepare_input",
+      "output": "result",
+      "side_effect": true,
+      "purposes": []
+    },
+    {
+      "name": "runtime_start",
+      "method": "runtime.start",
+      "input": "start_input",
+      "output": "result",
+      "side_effect": true,
+      "purposes": []
+    },
+    {
+      "name": "runtime_repair",
+      "method": "runtime.repair",
+      "input": "repair_input",
+      "output": "result",
+      "side_effect": true,
+      "purposes": []
+    },
+    {
+      "name": "runtime_uninstall",
+      "method": "runtime.uninstall",
+      "input": "uninstall_input",
+      "output": "result",
+      "side_effect": true,
+      "purposes": []
+    }
+  ]
+}

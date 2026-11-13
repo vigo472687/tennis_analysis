@@ -1,0 +1,18 @@
+{
+  "version": "0.1.0",
+  "scope": "初学者至基础3.0技术；3.5-4.0仅使用适用的基础规则，超库降级",
+  "status": "公开教学资料与产品观察规则；未经合作教练专业签署、未经训练效果验证",
+  "authority": "个人判断必须同时有有效原视频证据；本库不能证明用户动作存在问题",
+  "observation_rules": [
+    {"id":"GS-CHAIN","requires":["body","feet","racket"],"observe":"同一击球周期中支撑腿、髋/躯干、肩臂与拍头的相对启动、延续和中断。","output":"原视频时间区间与可见先后或重叠，不把二维转动转换成真实合力、力矩或能量。","candidate":"身体已启动而手臂长时间停滞，或仅见手臂而腿躯干缺少可观察参与时，提出连续性假设。","alternatives":["开放式站位或被动防守不等同于动力链错误","透视、衣物与遮挡可制造不同步"],"on_missing":"缺脚不判断支撑/蹬转；缺拍不判断末端拍头；仅描述剩余可见身体信息。","basis":"source_plus_observation_design","sources":["SRC-TA-FUND","SRC-MO-FH"]},
+    {"id":"GS-DROP","requires":["racket","body"],"observe":"拉拍到前挥之间，拍头相对身体和球的下降、转向与向前连续性。","output":"降拍头候选区间及前挥的相对先后；球不可见时不评价拍头相对球的高度。","candidate":"出现可重复停顿时先讨论节奏，禁止以单帧拍头低就判正确。","alternatives":["高球、切削、截击和不同握拍不适用相同降拍路线","镜头外的拍头不能补画成证据"],"on_missing":"球拍不可见或时间映射失效则不发布该问题。","basis":"source_plus_observation_design","sources":["SRC-TA-FUND"]},
+    {"id":"GS-WHIP","requires":["body","racket"],"observe":"前挥中身体、上肢和拍头运动衔接，以及随挥是否自然延续。","output":"鞭打式加速仅作末端跟随的教学比喻；未经标定不输出真实速度或加速度。","candidate":"若可见反复僵停，优先低速连续挥拍；不教用户主动甩腕、强行压腕或追求职业拍速。","alternatives":["二维轨迹不能证明关节负荷或肌肉发力","短促挥拍可能是战术选择"],"on_missing":"只保留可见段，无法从身体骨架推定拍头。","basis":"source_plus_observation_design","sources":["SRC-MO-FH","SRC-TA-FUND"]},
+    {"id":"GS-TIMING","requires":["ball","body","feet","racket"],"observe":"来球飞行、落地候选、移动拉拍、调整支撑、降拍头、蹬转与前挥同轴关系。","output":"先读球的方向/深浅和可用时间，再说明在哪段移动与准备；精确触球无法确认时标为候选窗口。","candidate":"若准备持续落后，先降低喂球难度并练习读球、移动中转体，再练向目标连续送拍的迎球感觉。","alternatives":["上升期、下降期和高球处理各有适用条件","迎球不等于身体冲撞来球或所有球都抢上升期"],"on_missing":"球不见不判断落地、来球时机或精确触球；需要含来球路径的连续机位。","basis":"source_plus_observation_design","sources":["SRC-LTA-FH","SRC-TA-FUND"]}
+  ],
+  "strokes": [
+    {"id":"forehand","label":"正手","rule_ids":["GS-CHAIN","GS-DROP","GS-WHIP","GS-TIMING"],"specific":"腿与躯干的可见参与带动肩臂和拍头，关注准备到随挥的衔接；不强制封闭式站位或后脚向前脚转移。","cue":"看清来球后边移动边转肩，调整出击球空间，再把拍子连续送向目标。","drill_ids":["DR-FH-RHYTHM","DR-FOOT-TIMING"],"sources":["SRC-LTA-FH","SRC-MO-FH","SRC-TA-FUND"]},
+    {"id":"single_backhand","label":"单手反手","rule_ids":["GS-CHAIN","GS-DROP","GS-WHIP","GS-TIMING"],"specific":"观察辅助手在准备阶段的支持、支撑与躯干到击球臂的连续性；不直接套正手的髋肩转动幅度或双反模式。","cue":"先留出身体与球的距离，让转体、放拍和前挥接起来，保持可控随挥。","drill_ids":["DR-BH-SPACE","DR-FOOT-TIMING"],"sources":["SRC-TA-FUND","SRC-LTA-BH"]},
+    {"id":"double_backhand","label":"双手反手","rule_ids":["GS-CHAIN","GS-DROP","GS-WHIP","GS-TIMING"],"specific":"观察双手与躯干配合、来球距离和回位；不从视频判断两只手的真实用力比例，不用单反的伸展标准评双反。","cue":"先转肩和移动到位，再让双手随身体连续前送；不单独强拉优势手。","drill_ids":["DR-BH-SPACE","DR-FOOT-TIMING"],"sources":["SRC-TA-FUND","SRC-LTA-BH"]}
+  ],
+  "global_limits":["固定样本观察必须持续显示模拟","不从性别、力量印象或喜欢的球星决定打法","没有可追溯证据时只能给通用知识和拍摄建议","出现疼痛、受伤、眩晕或恶化停止相关练习"]
+}

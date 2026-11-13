@@ -1,0 +1,15 @@
+{
+  "skill":"tennis-runtime-orchestration",
+  "validation":"scenario_walkthrough_only; runtime modules separately tested",
+  "cases":[
+    {"id":"runtime-not-needed","input":{"requirement":"not_required"},"expected":{"status_calls":0,"start_calls":0}},
+    {"id":"runtime-uncertain","input":{"requirement":"uncertain"},"expected":{"next":"补问","prepare_calls":0}},
+    {"id":"runtime-stopped","input":{"requirement":"required","state":"installed_stopped","existing_scope_confirmed":true},"expected":{"status_first":true,"start_calls":1,"resume_original_max":1}},
+    {"id":"runtime-refused","input":{"state":"not_initialized","preparation_confirmed":false},"expected":{"prepare_calls":0,"fallback":"通用问答","original_retained":true}},
+    {"id":"runtime-missing-artifact","input":{"mode":"python","artifact_available":false},"expected":{"claim_ready":false,"code":"PYTHON_ARTIFACT_MISSING","unreviewed_download":false}},
+    {"id":"runtime-repair","input":{"state":"repair_required","scope_changed":true},"expected":{"automatic_expanded_repair":false,"next":"展示新范围并确认"}},
+    {"id":"runtime-uninstall","input":{"request":"卸载组件"},"expected":{"delete_projects":false,"external_copies_claim_deleted":false,"keep_project_data":true}},
+    {"id":"runtime-report-only","input":{"analysis":"complete","report":"failed"},"expected":{"repeat_media":false,"resume":"report"}},
+    {"id":"runtime-youth","input":{"age":"youth","export_confirmed":true,"guardian_simulated":false},"expected":{"export":false,"next":"模拟监护确认"}}
+  ]
+}
