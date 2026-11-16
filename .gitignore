@@ -1,7 +1,8 @@
 # Local uploaded videos and generated analysis artifacts.
 /tmp/
 
-# Not part of the code snapshot: process docs, test videos / fixtures, model weights, tool config.
+# Not part of the code snapshot: process docs, test videos / fixtures, tool config.
+# Model weights ARE part of the project (open-source release): models/ is tracked.
 /001 需求调研/
 /002 PRD/
 /003 SDD/
@@ -10,7 +11,6 @@
 /006 调试工作台联调/
 /fixtures/
 /integration/
-/models/
 /design-system/
 /AGENTS.md
 /.claude/

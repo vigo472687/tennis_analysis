@@ -1,0 +1,14 @@
+{
+  "name": "MediaPipe Pose Landmarker Full",
+  "model_version": "float16/1",
+  "runtime": "mediapipe==1.2.2",
+  "source": "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/1/pose_landmarker_full.task",
+  "documentation": "https://developers.google.com/edge/mediapipe/solutions/vision/pose_landmarker",
+  "license": "Apache-2.0",
+  "license_source": "https://github.com/google-ai-edge/mediapipe/blob/master/LICENSE",
+  "file": "pose_landmarker_full.task",
+  "size_bytes": 9398198,
+  "sha256": "5134a3aad27a58b93da0088d431f366da362b44e3ccfbe3462b3827a839011b1",
+  "execution": "CPU, local, no runtime downloads",
+  "scope": "33 human body landmarks; no tennis ball, racket, stroke classification or coaching diagnosis"
+}
