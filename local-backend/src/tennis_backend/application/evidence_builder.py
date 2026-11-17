@@ -58,6 +58,11 @@ def _best(boxes: list[list[float]], floor: float) -> list[float] | None:
     return max(kept, key=lambda b: b[4]) if kept else None
 
 
+def _markers_at(candidates: list[hits.HitCandidate], frame: int) -> set[str]:
+    """Every basis whose anchor sits on ``frame`` (a frame may carry several)."""
+    return {f"{c.basis}_anchor" for c in candidates if c.anchor_frame == frame}
+
+
 def plan_retention(
     scan: BallRacketScan,
     candidates: list[hits.HitCandidate],
@@ -101,9 +106,23 @@ def build_evidence(
     retain_mode: str,
     uploaded_at: datetime,
     pose_valid: dict[int, bool] | None = None,
+    extra_candidates: list[hits.HitCandidate] | None = None,
 ) -> EvidenceSummary:
-    """Store frames, candidates and retention for one task version."""
+    """Store frames, candidates and retention for one task version.
+
+    ``extra_candidates`` carries candidates found on another basis in the same
+    video (far view: ``ball_track`` turnarounds). They are stored alongside the
+    near-view ones so one retrieval path serves both; the expert sees the
+    ``basis`` and decides. Frames carry every marker that fired on them, never
+    only the first.
+    """
     candidates = build_candidates(scan)
+    if extra_candidates:
+        known = {c.anchor_frame for c in candidates}
+        candidates = sorted(
+            [*candidates, *(c for c in extra_candidates if c.anchor_frame not in known)],
+            key=lambda c: c.anchor_frame,
+        )
     series = hits.distance_series(scan.frames)
     anchor_frames = hits.find_anchors(series)
     ids = {c.anchor_frame: f"cand-{c.anchor_frame}" for c in candidates}
@@ -116,11 +135,17 @@ def build_evidence(
         return None
 
     rows: list[EvidenceFrame] = []
+    near_anchors = {c.anchor_frame for c in build_candidates(scan)}
     for frame in sorted(scan.frames):
         entry = scan.frames[frame]
         ball = _best(entry.get("ball", []), hits.BALL_CONFIDENCE)
         racket = _best(entry.get("racket", []), hits.RACKET_CONFIDENCE)
         nearest = min((abs(frame - a) for a in anchor_frames), default=None)
+        # ``ball_racket_anchor`` keeps its original meaning (a near-view anchor
+        # frame from the distance series); every other basis is marked under
+        # its own name, so a far-view turnaround never poses as a near-view one
+        marker_set = {"ball_racket_anchor"} if frame in near_anchors else set()
+        marker_set.update(_markers_at(candidates, frame))
         rows.append(
             EvidenceFrame(
                 frame=frame,
@@ -130,7 +155,7 @@ def build_evidence(
                 racket=None if racket is None else racket[:4],
                 racket_confidence=None if racket is None else racket[4],
                 pose_valid=pose.get(frame, False),
-                markers=("ball_racket_anchor",) if frame in anchor_frames else (),
+                markers=tuple(sorted(marker_set)),
                 candidate_id=candidate_of(frame),
                 frames_to_anchor=nearest,
             )
