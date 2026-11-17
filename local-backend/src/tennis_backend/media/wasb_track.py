@@ -470,7 +470,7 @@ def _low_threshold(
             if not inside.any():
                 continue
             values = w.values[inside].astype(np.float32)
-            peak = float(values.max())
+            peak = float(np.max(values))
             if peak >= 0.4 and (best is None or peak > best[0]):
                 best = (peak, w.xs[inside], w.ys[inside], values)
         if best is None:
