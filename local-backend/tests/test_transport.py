@@ -230,7 +230,7 @@ def envelope(
     simulation: bool = True,
 ) -> dict[str, Any]:
     return {
-        "contract_version": "1.1.0",
+        "contract_version": "2.0.0",
         "request_id": request_id,
         "operation_id": operation_id,
         "method": method,
@@ -300,7 +300,7 @@ def test_roundtrip_ids_correspond_and_stdout_is_protocol_only(backend: BackendPr
     assert first["request_id"] == "req-s1"
     assert second["request_id"] == "req-s2"
     for payload in (first, second):
-        assert payload["contract_version"] == "1.1.0"
+        assert payload["contract_version"] == "2.0.0"
         assert payload["ok"] is True
         assert payload["error"] is None
         assert payload["simulation"] is True
@@ -312,7 +312,7 @@ def test_invalid_input_then_valid_request_recovers(backend: BackendProcess) -> N
     backend.send_bytes(b"[1, 2]\n")
     backend.send_bytes(b"{oops\n")
     backend.send_bytes(
-        b'{"request_id":"req-nan","contract_version":"1.1.0","operation_id":null,'
+        b'{"request_id":"req-nan","contract_version":"2.0.0","operation_id":null,'
         b'"method":"runtime.status","params":{"runtime_requirement":"not_required"},'
         b'"simulation":NaN}\n'
     )
@@ -577,7 +577,7 @@ def _serve_lines(
 
 def test_parse_rules_duplicate_keys_nan_and_encoding(registry: ContractRegistry) -> None:
     duplicate = (
-        b'{"request_id":"req-d","request_id":"req-d2","contract_version":"1.1.0",'
+        b'{"request_id":"req-d","request_id":"req-d2","contract_version":"2.0.0",'
         b'"operation_id":null,"method":"runtime.status",'
         b'"params":{"runtime_requirement":"not_required"},"simulation":true}\n'
     )

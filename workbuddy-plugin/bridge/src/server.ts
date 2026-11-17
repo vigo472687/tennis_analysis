@@ -6,7 +6,7 @@ import {fileURLToPath,pathToFileURL} from 'node:url';
 import {Server} from '@modelcontextprotocol/sdk/server/index.js';
 import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
 import {CallToolRequestSchema,ListToolsRequestSchema} from '@modelcontextprotocol/sdk/types.js';
-import {ContractRegistry,ContractError} from './contracts.js';
+import {CONTRACT_VERSION,ContractRegistry,ContractError} from './contracts.js';
 import {RuntimeStore} from './runtime-state.js';
 import {FixtureBackend} from './fixture-backend.js';
 import {ProcessClient} from './process-client.js';
@@ -23,7 +23,7 @@ export function createBridge(options:BridgeOptions){
   let fixtureRunning=true;
   const health=async()=>{
     if(options.mode==='fixture')return [{code:'fixture_ready',passed:fixtureRunning}];
-    const reply=await python.call({contract_version:'1.1.0',request_id:'health-'+randomUUID(),operation_id:null,method:'runtime.status',params:{runtime_requirement:'required'},simulation:false});
+    const reply=await python.call({contract_version:CONTRACT_VERSION,request_id:'health-'+randomUUID(),operation_id:null,method:'runtime.status',params:{runtime_requirement:'required'},simulation:false});
     if(!reply.ok)throw new ContractError('BACKEND_HEALTH_FAILED');return [{code:'python_contract_ready',passed:true}];
   };
   const verify=async(version:string)=>{

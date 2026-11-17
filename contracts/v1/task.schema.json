@@ -128,6 +128,23 @@
       "real_video"
      ],
      "description": "分析来源：fixture=固定样本（默认，需 fixture_id）；real_video=获准真实视频（按 media_ref 分析）"
+    },
+    "retain_mode": {
+     "type": "string",
+     "enum": [
+      "route_trimmed",
+      "full"
+     ],
+     "default": "route_trimmed",
+     "description": "证据帧保留方式。route_trimmed 按路由仅保留所需区间；full 保留完整分析区间。调用方选择 full 前必须先调用 analysis.estimate_storage，并取得用户对预计空间和全量保留的明确确认。"
+    },
+    "detector": {
+     "type": "string",
+     "enum": [
+      "coco",
+      "wasb"
+     ],
+     "description": "球检测器：coco 用于近景球/球拍检测，wasb 用于远景或中景球轨迹。未提供时由后端按受限流程询问或兜底，并明确标注来源。"
     }
    },
    "required": [

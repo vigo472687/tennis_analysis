@@ -4,6 +4,7 @@ import path from 'node:path';
 import {spawn,type ChildProcessWithoutNullStreams} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
 import {StringDecoder} from 'node:string_decoder';
+import {CONTRACT_VERSION} from './contracts.js';
 
 export class Phase1Error extends Error {
   constructor(readonly code:string,readonly status=422){super(code);}
@@ -33,7 +34,7 @@ export function createFixtureParams(operationId:string,fixture='iphone-flat'){
   };
 }
 export function envelope(method:string,params:Record<string,unknown>,simulation=method!=='runtime.status',operationId:string|null=null){
-  return {contract_version:'1.1.0',request_id:'req-'+randomUUID(),operation_id:operationId,method,params,simulation};
+  return {contract_version:CONTRACT_VERSION,request_id:'req-'+randomUUID(),operation_id:operationId,method,params,simulation};
 }
 export function findUv():string {
   for(const name of [...String(process.env.PATH||'').split(path.delimiter).map(p=>path.join(p,process.platform==='win32'?'uv.exe':'uv')),path.join(os.homedir(),'.local/bin/uv'),'/opt/homebrew/bin/uv']){
@@ -61,7 +62,7 @@ export class Phase1Backend {
   snapshot(){return {
     lifecycle:this.lifecycle,running:this.running,pid:this.running?this.child?.pid:null,
     data_root:this.dataRoot,session_id:this.sessionId,exit_code:this.exitCode,error:this.lastError,
-    contract_version:'1.1.0',analysis_mode:'fixture+real_video',stdout_lines:this.stdoutLines,
+    contract_version:CONTRACT_VERSION,analysis_mode:'fixture+real_video',stdout_lines:this.stdoutLines,
     pending:[...this.active].map(x=>({request_id:x.id,method:x.method,request_line:x.line,elapsed_ms:Date.now()-x.started})),
     health:this.health,diagnostics:[...this.diagnostics],history:[...this.history],transitions:[...this.transitions]
   };}

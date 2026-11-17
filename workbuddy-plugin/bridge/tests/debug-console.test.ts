@@ -59,7 +59,7 @@ test('story catalog and dynamic tool registry are complete and traceable',async 
   assert.equal(stories.body.stories.filter((item:{coverage:string})=>item.coverage==='executable').length,20);
   assert.equal(stories.body.stories.filter((item:{coverage:string})=>item.coverage==='partial').length,7);
   assert.equal(stories.body.stories.filter((item:{coverage:string})=>item.coverage==='external').length,14);
-  const tools=await getJson(handle.url,'/api/tools');assert.equal(tools.status,200);assert.equal(tools.body.items.length,17);assert.equal(new Set(tools.body.items.map((item:{name:string})=>item.name)).size,17);assert.ok(tools.body.items.every((item:{inputSchema:unknown})=>item.inputSchema));
+  const tools=await getJson(handle.url,'/api/tools');assert.equal(tools.status,200);assert.equal(tools.body.items.length,19);assert.equal(new Set(tools.body.items.map((item:{name:string})=>item.name)).size,19);assert.ok(tools.body.items.every((item:{inputSchema:unknown})=>item.inputSchema));
   const fixtures=await getJson(handle.url,'/api/fixtures');assert.equal(fixtures.body.items.some((item:{fixture_id:string})=>item.fixture_id==='multiple-subjects'),true);
 });
 

@@ -3,6 +3,7 @@ import path from 'node:path';
 import {Ajv,type ValidateFunction} from 'ajv';
 
 export type JsonObject=Record<string,unknown>;
+export const CONTRACT_VERSION='2.0.0' as const;
 export interface ToolDefinition {
   name:string;method:string;input:string;output:string;side_effect:boolean;purposes:string[];schema_file:string;
 }
@@ -10,10 +11,10 @@ export interface WireError {
   code:string;stage:string;retryable:boolean;user_action:string;retained:string[];details_ref:string|null;simulation:boolean;
 }
 export interface RequestEnvelope {
-  contract_version:'1.1.0';request_id:string;operation_id:string|null;method:string;params:JsonObject;simulation:boolean;
+  contract_version:typeof CONTRACT_VERSION;request_id:string;operation_id:string|null;method:string;params:JsonObject;simulation:boolean;
 }
 export interface ResponseEnvelope {
-  contract_version:'1.1.0';request_id:string;ok:boolean;result:unknown;error:WireError|null;simulation:boolean;
+  contract_version:typeof CONTRACT_VERSION;request_id:string;ok:boolean;result:unknown;error:WireError|null;simulation:boolean;
 }
 export class ContractError extends Error {
   constructor(public readonly code:string,public readonly pointers:readonly string[]=[]){super(code);this.name='ContractError';}
@@ -29,7 +30,7 @@ export class ContractRegistry {
     const documents=readdirSync(directory).filter(f=>f.endsWith('.schema.json')).sort().map(file=>JSON.parse(readFileSync(path.join(directory,file),'utf8')) as SchemaDocument);
     for(const doc of documents)this.ajv.addSchema(doc);
     this.tools=Object.freeze(documents.flatMap(doc=>(doc['x-tools']||[]).map(t=>({...t,schema_file:path.basename(doc.$id,'.schema.json')}))));
-    if(this.tools.length!==17||new Set(this.tools.map(t=>t.method)).size!==17||new Set(this.tools.map(t=>t.name)).size!==17)throw new ContractError('CONTRACT_REGISTRY_INVALID');
+    if(this.tools.length!==19||new Set(this.tools.map(t=>t.method)).size!==19||new Set(this.tools.map(t=>t.name)).size!==19)throw new ContractError('CONTRACT_REGISTRY_INVALID');
     for(const t of this.tools){this.checker(this.toolRef(t,'input'));this.checker(this.toolRef(t,'output'));}
   }
   tool(name:string):ToolDefinition {

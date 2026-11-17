@@ -43,7 +43,7 @@ from referencing import Resource as ReferencingResource
 from referencing.jsonschema import DRAFT7
 
 #: Frozen wire contract this module validates against (contracts/v1).
-CONTRACT_VERSION = "1.1.0"
+CONTRACT_VERSION = "2.0.0"
 
 #: Base URI all contract ``$id`` values share; refs stay local to it.
 BASE_URI = "https://tennis.local/contracts/v1/"
@@ -147,6 +147,7 @@ ConfidenceLevel = Literal["high", "medium", "low", "insufficient_evidence"]
 ResourceKind = Literal[
     "input_copy",
     "evidence_frame",
+    "evidence_zoom",
     "evidence_clip",
     "trajectory",
     "target_pose",
@@ -154,7 +155,12 @@ ResourceKind = Literal[
     "diagnostics",
     "record",
 ]
-EvidenceResourceKind = Literal["evidence_frame", "evidence_clip", "trajectory"]
+EvidenceResourceKind = Literal[
+    "evidence_frame",
+    "evidence_zoom",
+    "evidence_clip",
+    "trajectory",
+]
 EvidenceKind = Literal["video_frame", "video_clip", "trajectory", "user_statement", "quality_frame"]
 ConsentPurpose = Literal[
     "analysis",
@@ -329,7 +335,7 @@ class ErrorModel(_Frozen):
 class Request(_Frozen):
     """``common:request`` - one NDJSON request line."""
 
-    contract_version: Literal["1.1.0"]
+    contract_version: Literal["2.0.0"]
     request_id: Id
     operation_id: Id | None
     method: MethodName
@@ -344,7 +350,7 @@ class Response(_Frozen):
     per-method shapes are enforced separately by ``validate_result``.
     """
 
-    contract_version: Literal["1.1.0"]
+    contract_version: Literal["2.0.0"]
     request_id: Id
     ok: bool
     result: Any
@@ -393,6 +399,8 @@ class CreateInput(_Frozen):
     auxiliary_routes: Annotated[list[Route], Field(max_length=2), AfterValidator(_require_unique)]
     subject_id: Id | None
     mirror_confirmed: bool
+    retain_mode: RetainMode = "route_trimmed"
+    detector: DetectorSlot | None = None
 
     @model_validator(mode="after")
     def _check_mode_fixture_pairing(self) -> CreateInput:
@@ -595,6 +603,138 @@ class RenderInput(_Frozen):
     mode: RenderMode
 
 
+RetainMode = Literal["route_trimmed", "full"]
+DetectorSlot = Literal["coco", "wasb"]
+EvidenceMarker = Literal["ball_racket_anchor", "ball_track_event", "wrist_peak"]
+TrajectorySource = Literal["detected", "recovered", "lowthr", "estimated"]
+RetrievalFailureCode = Literal["not_retained", "expired", "no_candidate"]
+WindowLevel = Literal[20, 40, 80]
+
+
+class EvidenceInput(_Frozen):
+    """``analysis:evidence_input``.
+
+    Exactly one retrieval mode: a candidate id, or an inclusive frame range.
+    Window levels and frame caps are backend constants, deliberately not
+    request fields.
+    """
+
+    task_id: Id
+    version: int = Field(ge=1)
+    candidate_id: Id | None = None
+    frame_start: int | None = Field(default=None, ge=0)
+    frame_end: int | None = Field(default=None, ge=0)
+    include_zoom: bool = True
+
+    @model_validator(mode="after")
+    def _check_exactly_one_mode(self) -> EvidenceInput:
+        if self.candidate_id is not None:
+            if self.frame_start is not None or self.frame_end is not None:
+                raise ValueError("candidate_id excludes frame_start/frame_end")
+        elif self.frame_start is None or self.frame_end is None:
+            raise ValueError("retrieval needs candidate_id or both frame_start and frame_end")
+        return self
+
+
+class IntervalSeconds(_Frozen):
+    """Inclusive candidate interval on the original timeline."""
+
+    start: float = Field(ge=0)
+    end: float = Field(ge=0)
+
+
+class HitCandidateModel(_Frozen):
+    """``analysis:hit_candidate`` — a review candidate, never a hit conclusion."""
+
+    candidate_id: Id
+    interval_start_frame: int = Field(ge=0)
+    interval_end_frame: int = Field(ge=0)
+    original_s: IntervalSeconds
+    basis: Literal["ball_racket", "ball_track", "pose_only"]
+    basis_error_frames: int | None = Field(default=None, ge=0)
+    confidence: float = Field(ge=0, le=1)
+    window_level: WindowLevel
+
+
+class BallTrajectoryPoint(_Frozen):
+    """``analysis:ball_trajectory`` point (normalised; ``estimated`` never in metrics)."""
+
+    frame: int = Field(ge=0)
+    original_s: float = Field(ge=0)
+    x: float = Field(ge=0, le=1)
+    y: float = Field(ge=0, le=1)
+    source: TrajectorySource
+    peak: float | None = None
+
+
+class EvidenceFrameImage(Resource):
+    """``common:resource`` narrowed to the frame-image kind."""
+
+    kind: Literal["evidence_frame"]
+
+
+class EvidenceZoomImage(Resource):
+    """``common:resource`` narrowed to the ball close-up kind."""
+
+    kind: Literal["evidence_zoom"]
+
+
+class EvidenceFrameOut(_Frozen):
+    """One frame of ``analysis:evidence_result``: detections only, no verdict."""
+
+    frame: int = Field(ge=0)
+    time_s: float = Field(ge=0)
+    image: EvidenceFrameImage
+    zoom: EvidenceZoomImage | None = None
+    ball_box: Annotated[list[float], Field(min_length=4, max_length=4)] | None = None
+    ball_confidence: float | None = Field(default=None, ge=0, le=1)
+    racket_box: Annotated[list[float], Field(min_length=4, max_length=4)] | None = None
+    racket_confidence: float | None = Field(default=None, ge=0, le=1)
+    pose_valid: bool
+    markers: Annotated[list[EvidenceMarker], Field(max_length=3), AfterValidator(_require_unique)]
+    candidate_id: Id | None = None
+    frames_to_anchor: int | None = Field(default=None, ge=0)
+
+
+class EvidenceResult(_Frozen):
+    """``analysis:evidence_result`` — detection evidence, never a hit assertion."""
+
+    frames: Annotated[list[EvidenceFrameOut], Field(max_length=600)]
+    candidates: Annotated[list[HitCandidateModel], Field(max_length=200)] = []
+    trajectory: Annotated[list[BallTrajectoryPoint], Field(max_length=600)] = []
+    window_level: WindowLevel | None = None
+    truncated: bool
+    reason: RetrievalFailureCode | None = None
+    message: Annotated[str, StringConstraints(max_length=2048)] = ""
+    simulation: bool
+
+
+class StorageInput(_Frozen):
+    """``analysis:storage_input``."""
+
+    task_id: Id
+    version: int = Field(ge=1)
+    retain_mode: RetainMode
+
+
+class StorageRange(_Frozen):
+    """One retained frame range of a storage estimate."""
+
+    start: int = Field(ge=0)
+    end: int = Field(ge=0)
+
+
+class StorageEstimate(_Frozen):
+    """``analysis:storage_estimate`` — an estimate for user choice, not a promise."""
+
+    mode: RetainMode
+    retained_frames: int = Field(ge=0)
+    estimated_bytes: int = Field(ge=0)
+    ranges: Annotated[list[StorageRange], Field(max_length=200)]
+    requires_confirmation: bool
+    simulation: bool
+
+
 class RenderResult(_Frozen):
     """``analysis:render_result``.
 
@@ -786,6 +926,12 @@ _TYPED_DEFINITIONS: dict[tuple[str, str], Any] = {
     ("analysis", "metrics_result"): MetricsResult,
     ("analysis", "render_input"): RenderInput,
     ("analysis", "render_result"): RenderResult,
+    ("analysis", "evidence_input"): EvidenceInput,
+    ("analysis", "evidence_result"): EvidenceResult,
+    ("analysis", "hit_candidate"): HitCandidateModel,
+    ("analysis", "ball_trajectory"): BallTrajectoryPoint,
+    ("analysis", "storage_input"): StorageInput,
+    ("analysis", "storage_estimate"): StorageEstimate,
     ("analysis", "target_input"): TargetInput,
     ("analysis", "target_result"): TargetResult,
     ("analysis", "compare_input"): CompareInput,
@@ -917,11 +1063,11 @@ class ContractRegistry:
         *,
         registry: Registry,
         schemas: Mapping[str, Mapping[str, Any]],
-        contract_version: Literal["1.1.0"],
+        contract_version: Literal["2.0.0"],
     ) -> None:
         self._registry = registry
         self._schemas = dict(schemas)
-        self._contract_version: Literal["1.1.0"] = contract_version
+        self._contract_version: Literal["2.0.0"] = contract_version
         self._tools = self._load_tools()
 
     @classmethod
@@ -942,7 +1088,7 @@ class ContractRegistry:
                 )
             resources.append((base, resource))
         registry = Registry().with_resources(resources)
-        version: Literal["1.1.0"] = schemas["common"]["definitions"]["request"]["properties"][
+        version: Literal["2.0.0"] = schemas["common"]["definitions"]["request"]["properties"][
             "contract_version"
         ]["const"]
         if version != CONTRACT_VERSION:
@@ -954,7 +1100,7 @@ class ContractRegistry:
         return cls(registry=registry, schemas=schemas, contract_version=version)
 
     @property
-    def contract_version(self) -> Literal["1.1.0"]:
+    def contract_version(self) -> Literal["2.0.0"]:
         """The frozen wire contract version loaded from ``common``."""
         return self._contract_version
 

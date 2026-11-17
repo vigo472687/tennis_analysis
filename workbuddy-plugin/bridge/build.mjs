@@ -35,10 +35,10 @@ try{
   const client=new Client({name:'tennis-build-check',version:'0.1.0'});
   const transport=new StdioClientTransport({command:process.execPath,args:[path.join(relocated,'bin/tennis-bridge.mjs')],cwd:os.tmpdir(),env:{PATH:process.env.PATH||'',TENNIS_DATA_ROOT:path.join(relocated,'data'),TENNIS_BACKEND:'fixture'},stderr:'inherit'});
   try{
-    await client.connect(transport);const tools=await client.listTools();if(tools.tools.length!==17)throw new Error('Tool registry mismatch');
+    await client.connect(transport);const tools=await client.listTools();if(tools.tools.length!==19)throw new Error('Tool registry mismatch');
     await client.callTool({name:'runtime_status',arguments:{runtime_requirement:'not_required'}});if(fs.existsSync(path.join(relocated,'data')))throw new Error('Idle bridge wrote data');
     const response=await client.callTool({name:'runtime_prepare',arguments:{operation_id:'build-prepare',consent_confirmed:true,target_version:'0.1.0',intent:'prepare',scope_digest:'fixture-local-v1'}});
     if(response.isError)throw new Error('Relocated fixture preparation failed');
   }finally{await client.close();}
 }finally{fs.rmSync(relocated,{recursive:true,force:true});}
-console.log(JSON.stringify({bundle:'bin/tennis-bridge.mjs',tools:17,fixtures:manifest.samples.length,relocation:'passed',simulation:true,python_artifact:'separate_backend_gate',workbuddy_client:'not_tested'}));
+console.log(JSON.stringify({bundle:'bin/tennis-bridge.mjs',tools:19,fixtures:manifest.samples.length,relocation:'passed',simulation:true,python_artifact:'separate_backend_gate',workbuddy_client:'not_tested'}));

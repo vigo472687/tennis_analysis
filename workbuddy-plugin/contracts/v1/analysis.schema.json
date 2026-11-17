@@ -360,6 +360,515 @@
       ],
       "additionalProperties": false
     },
+    "evidence_input": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "candidate_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "frame_start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "frame_end": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Must be greater than or equal to frame_start."
+        },
+        "include_zoom": {
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "required": [
+        "task_id",
+        "version"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "candidate_id"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "frame_start"
+                ]
+              },
+              {
+                "required": [
+                  "frame_end"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "frame_start",
+            "frame_end"
+          ],
+          "not": {
+            "required": [
+              "candidate_id"
+            ]
+          }
+        }
+      ],
+      "additionalProperties": false,
+      "description": "Retrieve by exactly one mode: candidate_id, or an inclusive frame_start/frame_end range. Window levels (20/40/80) and frame limits (200/600) are backend constants and are intentionally not request fields."
+    },
+    "hit_candidate": {
+      "type": "object",
+      "properties": {
+        "candidate_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "interval_start_frame": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "interval_end_frame": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "original_s": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "number",
+              "minimum": 0
+            },
+            "end": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "start",
+            "end"
+          ],
+          "additionalProperties": false,
+          "description": "Inclusive candidate interval mapped to the original-video timeline; end must not precede start."
+        },
+        "basis": {
+          "type": "string",
+          "enum": [
+            "ball_racket",
+            "ball_track",
+            "pose_only"
+          ]
+        },
+        "basis_error_frames": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "window_level": {
+          "type": "integer",
+          "enum": [
+            20,
+            40,
+            80
+          ]
+        }
+      },
+      "required": [
+        "candidate_id",
+        "interval_start_frame",
+        "interval_end_frame",
+        "original_s",
+        "basis",
+        "basis_error_frames",
+        "confidence",
+        "window_level"
+      ],
+      "additionalProperties": false,
+      "description": "A review candidate, never a frame-precise hit conclusion."
+    },
+    "ball_trajectory": {
+      "type": "object",
+      "properties": {
+        "frame": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "original_s": {
+          "type": "number",
+          "minimum": 0
+        },
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "detected",
+            "recovered",
+            "lowthr",
+            "estimated"
+          ]
+        },
+        "peak": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "frame",
+        "original_s",
+        "x",
+        "y",
+        "source",
+        "peak"
+      ],
+      "additionalProperties": false,
+      "description": "One normalized trajectory point. estimated points and gaps are visually distinct from detections and never enter metrics."
+    },
+    "evidence_result": {
+      "type": "object",
+      "properties": {
+        "frames": {
+          "type": "array",
+          "maxItems": 600,
+          "items": {
+            "type": "object",
+            "properties": {
+              "frame": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "time_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "image": {
+                "allOf": [
+                  {
+                    "$ref": "common.schema.json#/definitions/resource"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "evidence_frame"
+                      }
+                    }
+                  }
+                ]
+              },
+              "zoom": {
+                "anyOf": [
+                  {
+                    "allOf": [
+                      {
+                        "$ref": "common.schema.json#/definitions/resource"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "const": "evidence_zoom"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ball_box": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 4,
+                    "maxItems": 4
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ball_confidence": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "racket_box": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 4,
+                    "maxItems": 4
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "racket_confidence": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pose_valid": {
+                "type": "boolean"
+              },
+              "markers": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "ball_racket_anchor",
+                    "ball_track_event",
+                    "wrist_peak"
+                  ]
+                },
+                "maxItems": 3,
+                "uniqueItems": true
+              },
+              "candidate_id": {
+                "anyOf": [
+                  {
+                    "$ref": "common.schema.json#/definitions/id"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "frames_to_anchor": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "frame",
+              "time_s",
+              "image",
+              "zoom",
+              "ball_box",
+              "ball_confidence",
+              "racket_box",
+              "racket_confidence",
+              "pose_valid",
+              "markers",
+              "candidate_id",
+              "frames_to_anchor"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "$ref": "analysis.schema.json#/definitions/hit_candidate"
+          },
+          "maxItems": 200
+        },
+        "trajectory": {
+          "type": "array",
+          "items": {
+            "$ref": "analysis.schema.json#/definitions/ball_trajectory"
+          },
+          "maxItems": 600
+        },
+        "window_level": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "enum": [
+                20,
+                40,
+                80
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "not_retained",
+                "expired",
+                "no_candidate"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 2048
+        },
+        "simulation": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "frames",
+        "window_level",
+        "truncated",
+        "reason",
+        "message",
+        "simulation"
+      ],
+      "additionalProperties": false,
+      "description": "Detection evidence only. It carries no field asserting that a hit occurred. Zoom resources use the dedicated evidence_zoom kind."
+    },
+    "storage_input": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "$ref": "common.schema.json#/definitions/id"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "retain_mode": {
+          "type": "string",
+          "enum": [
+            "route_trimmed",
+            "full"
+          ]
+        }
+      },
+      "required": [
+        "task_id",
+        "version",
+        "retain_mode"
+      ],
+      "additionalProperties": false
+    },
+    "storage_estimate": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "route_trimmed",
+            "full"
+          ]
+        },
+        "retained_frames": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "estimated_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ranges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "end": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "start",
+              "end"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 200
+        },
+        "requires_confirmation": {
+          "type": "boolean"
+        },
+        "simulation": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "mode",
+        "retained_frames",
+        "estimated_bytes",
+        "ranges",
+        "requires_confirmation",
+        "simulation"
+      ],
+      "additionalProperties": false,
+      "description": "An estimate for user choice, not a storage guarantee. full requires explicit user confirmation before analysis.create is called with retain_mode=full."
+    },
     "render_input": {
       "type": "object",
       "properties": {
@@ -646,6 +1155,22 @@
       "method": "analysis.metrics",
       "input": "task:lookup",
       "output": "metrics_result",
+      "side_effect": false,
+      "purposes": []
+    },
+    {
+      "name": "get_evidence",
+      "method": "evidence.get",
+      "input": "evidence_input",
+      "output": "evidence_result",
+      "side_effect": false,
+      "purposes": []
+    },
+    {
+      "name": "estimate_storage",
+      "method": "analysis.estimate_storage",
+      "input": "storage_input",
+      "output": "storage_estimate",
       "side_effect": false,
       "purposes": []
     },

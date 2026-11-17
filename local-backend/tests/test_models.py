@@ -79,7 +79,7 @@ def task_version(**overrides: Any) -> TaskVersion:
         "primary_route": "technical_diagnosis",
         "auxiliary_routes": ["question_answer"],
         "runtime_requirement": "required",
-        "contract_version": "1.1.0",
+        "contract_version": "2.0.0",
         "config_version": "fixture-config-1",
         "media_id": "media-1",
         "consent_id": "consent-1",

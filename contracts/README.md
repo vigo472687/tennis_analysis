@@ -1,6 +1,6 @@
-# Codex-Claude Contract v1
+# Codex-Claude Contract V2
 
-Status: frozen by CX-015. Contract version: `1.0.0`. Configuration: `fixture-config-1`. See integration/reports/contract-baseline.json for hashes.
+Status: V2 frozen on 2026-11-17. Contract version: `2.0.0`. Configuration: `fixture-config-1`. See integration/reports/contract-baseline.json for the 20 frozen hashes.
 
 JSON Schema draft-07 files in `v1/` are authoritative. Each schema has a stable `$id`; references resolve locally and never fetch the network. Codex owns changes. Claude requests changes rather than editing these files.
 
@@ -24,6 +24,8 @@ One UTF-8 JSON object per line on stdin/stdout. Diagnostics go to stderr. Reques
 | get_stroke_events | analysis.strokes | task:lookup | analysis:strokes_result | false | none/new consent not implied |
 | get_groundstroke_timing | analysis.timing | task:lookup | analysis:timing_result | false | none/new consent not implied |
 | get_motion_metrics | analysis.metrics | task:lookup | analysis:metrics_result | false | none/new consent not implied |
+| get_evidence | evidence.get | analysis:evidence_input | analysis:evidence_result | false | none/new consent not implied |
+| estimate_storage | analysis.estimate_storage | analysis:storage_input | analysis:storage_estimate | false | none/new consent not implied |
 | render_evidence_overlay | evidence.render | analysis:render_input | analysis:render_result | true | analysis |
 | generate_target_pose | target.generate | analysis:target_input | analysis:target_result | true | analysis |
 | compare_sessions | sessions.compare | analysis:compare_input | analysis:compare_result | false | retest |
@@ -46,6 +48,10 @@ All times are seconds on the original timeline unless explicitly named normalize
 
 Evidence.kind and its resource.kind exclude target_pose. Target resources have their own result type. relative metric units exclude physical force/torque/speed. Each formal report problem references valid evidence, with impact, limitations and alternative explanations; max three. External sources explain knowledge and never substitute for personal evidence. Safety-stop/rehab/uncertain reports cannot carry individual training loads.
 
+`evidence.get` retrieves a complete retained interval by candidate ID or by an inclusive frame range. Callers cannot set window size or frame count: the backend fixes the widening ladder at 20/40/80 frames and caps near-view/far-view returns at 200/600 frames. Whole-frame images use `evidence_frame`; each optional ball close-up uses the distinct `evidence_zoom` resource kind. Boxes, confidence, markers and candidates describe detections only and never assert a hit. `estimated` trajectory points and missing trajectory spans stay distinguishable from measured points and do not enter metrics.
+
+`create_input.retain_mode` defaults to `route_trimmed`. Before a caller submits `retain_mode=full`, it must call `analysis.estimate_storage`, present the estimated frames/bytes/ranges to the user, and obtain explicit confirmation. The estimate is not a storage guarantee. `detector` accepts only `coco` or `wasb`; absent values follow the bounded backend prompt/fallback path and must be labelled as fallback when applicable.
+
 `simulation=true` is mandatory for fixed analysis or platform substitutes. Probe metadata may be measured but must not imply real pose inference. Distinguish synthetic device scenarios from real device captures.
 
 ## Runtime entry and modes
@@ -55,12 +61,14 @@ Python dev launch: `uv run --frozen --project <local-backend> tennis-backend --s
 ## Response example
 
 ```json
-{"contract_version":"1.0.0","request_id":"req-1","ok":false,"result":null,"error":{"code":"TASK_NOT_FOUND","stage":"input","retryable":false,"user_action":"none","retained":[],"details_ref":null,"simulation":true},"simulation":true}
+{"contract_version":"2.0.0","request_id":"req-1","ok":false,"result":null,"error":{"code":"TASK_NOT_FOUND","stage":"input","retryable":false,"user_action":"none","retained":[],"details_ref":null,"simulation":true},"simulation":true}
 ```
 
 ## Versions and sources
 
 Optional additions are minor; semantic/required-field/removal changes are major. Frozen schemas and fixture inputs are fingerprinted in integration/reports/contract-baseline.json. The current docs describe prototype behavior; real WorkBuddy/devices/models are deferred.
+
+- `2.0.0` (2026-11-17): evidence retrieval and storage-estimation tools; hit-candidate and ball-trajectory definitions; dedicated evidence zoom resources; create-time retention and detector selection. The real backend must wire these methods before V2 live integration is claimed.
 
 - [Official MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x)
 - [WorkBuddy expert team](https://open.workbuddy.cn/docs/expert-team)

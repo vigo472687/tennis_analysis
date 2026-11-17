@@ -21,11 +21,13 @@ author: Vigo
 | `tactics`（完整回合、录播战术） | 整段分析区间的全部帧 | 不留空档，击球之间的移动和站位是判断的一部分 |
 | `question_answer` / `style_optimization` | 默认不保留帧；问题指向具体时间点时保留该点前后一段 | 一段 |
 
-按上面的路由直接定，不要求用户懂分帧或判断保留量。判断不了时（多人同框、检测质量差、用户没说清分析哪个球）保留整段并标scope_fallback，向用户说明原因、帧数和体积，不猜；用户可要求扩大或缩小，扩大须重新出图。保留的帧范围、原因、帧数、体积随任务返回并写入记录，便于事后回溯与删除。未保留的帧分析完成后即删；已保留的帧与元数据保留 1 个月，从上传时刻起算（访问不延长），到期由后端定时任务自动删除，不靠人工。
+创建分析前必须先调用 `estimate_storage(task_id, version, retain_mode)` 取得预估，把保留帧数、预计体积和区间告诉用户。让用户明确二选一：“立即全量执行”（`full`）或“只裁剪击球片段后执行”（`route_trimmed`）；未完成这一步不得提交 `retain_mode=full`。预估是估算值，不是存储承诺。把用户选择写入 `create_video_analysis.retain_mode`；检测器只可写 `coco` 或 `wasb`，没有把握时按后端受限询问/兜底流程处理并如实标注。
+
+按上面的路由说明默认建议，不要求用户懂分帧或自行判断保留量。判断不了时（多人同框、检测质量差、用户没说清分析哪个球），向用户说明全量与裁剪两种预估，不擅自改成全量。用户可要求扩大或缩小，扩大须重新预估并重新确认。保留的帧范围、原因、帧数、体积随任务返回并写入记录，便于事后回溯与删除。未保留的帧分析完成后即删；已保留的帧与元数据保留 1 个月，从上传时刻起算（访问不延长），到期由后端定时任务自动删除，不靠人工。
 
 证据返回（专家向后端要帧时按此调用，不自行截图、不猜坐标）：
 
-- **两种取法，都要**。按候选 ID：`get_evidence(candidate_id, side_frames=20, include_zoom=true)`，返回该候选前后区间的全部帧。按帧范围：`get_evidence(frame_start, frame_end, include_zoom=true)`，专家指定起止帧，不要求存在候选，用于系统漏掉的击球。
+- **两种取法，都要**。按候选 ID：`get_evidence(task_id, version, candidate_id, include_zoom=true)`，返回后端固定窗口内的全部帧。按帧范围：`get_evidence(task_id, version, frame_start, frame_end, include_zoom=true)`，专家指定起止帧，不要求存在候选，用于系统漏掉的击球。不得传 `side_frames` 或 `frame_limit`；窗口 20/40/80 和单次上限 200/600 由后端写死。
 - **不给单帧**。判断击球点早晚要看来球和随挥的连续过程，单帧无法判断；每次返回区间内的全部帧，不抽帧、不隔帧（隔帧只用于拼图预览）。
 - **起始窗口与放宽**。以候选代表帧 `f_c` 为中心取 ±20 帧（30fps 约 ±0.67 秒，按帧率换算成时间等长）。窗口内无同时检出球与球拍且归一化距离 ≤0.7 的帧时，依次放宽到 ±40、±80；两级都失败返回“该区间未找到击球候选”，不得凑锚点。放宽后仍按上限截断，超限时按距 `f_c` 由近到远取，并向用户说明被截断。
 - **单次上限**：近景动作判断 200 帧；远景轨迹 600 帧；专家指定区间按视频类型取其一。球心放大图每帧一张，不占帧数上限。
@@ -37,18 +39,20 @@ author: Vigo
 - **专家的限制**：多模态判定没有经过本项目标注数据验证，不能说“已核实”；击球点早晚只能结合姿态描述，不得凭帧号差下结论。用户或线下教练的判断优先于专家判定。
 - **失败与缺失**：区间超出已保留范围、保留期已过、候选被拒时，明确说明“该段未保留/已过期/未找到候选”并给出可做的替代（重新提交该段分析），不虚构帧、不拿相邻帧冒充。
 
-创建任务用create_video_analysis，参数严格按包内 `contracts/v1/task.schema.json` 的create_input，不能临时发明字段。需稳定operation_id、fixture_id、授权媒体引用、用户最小信息、分用途consent、主辅路由、主体与镜像确认。request_id由Bridge生成；操作重试保持operation_id，改变输入不能复用同一ID。大媒体只传资源引用，不编码进JSON或LLM上下文。
+创建任务用create_video_analysis，参数严格按包内 `contracts/v1/task.schema.json` 的create_input，不能临时发明字段。需稳定operation_id、fixture_id、授权媒体引用、用户最小信息、分用途consent、主辅路由、主体与镜像确认，并写入用户已选择的 `retain_mode` 与已明确的 `detector`。request_id由Bridge生成；操作重试保持operation_id，改变输入不能复用同一ID。大媒体只传资源引用，不编码进JSON或LLM上下文。
 
 主体选择/镜像未确认先停在输入检查；可根据工具返回的候选ID补问，用户新确认形成新输入版本或显式新操作，不能偷换原任务身份。未知动作返回unable；不要强制当成正手。
 
 调用顺序：
 
-1. create_video_analysis快速返回task_id/version/workspace_ref，不等待长任务结束；向用户说明当前阶段。
-2. get_analysis_status查询阶段和检查点；不要高频忙轮询。非终态允许cancel_analysis，重复取消无新副作用，完成/已取消任务不被改回运行。
-3. 质量可用后get_quality_report，交视觉解释员检查容器/时长/可见性/时间映射；严重损坏、超时或原生全景为unsupported，关键对象不足为reshoot_required或partial。
-4. 仅在适用阶段读取get_stroke_events、get_groundstroke_timing、get_motion_metrics。结果没就绪先说明等待，不用自己的推测代填。
-5. render_evidence_overlay可请求frame/clip/trajectory，使用有效evidence_ids；资源须同task/version、哈希一致、可回到原时间。缺资源标不可用与修复，不以目标图替换。
-6. 把可靠观察交tennis-evidence-reasoning，再进入训练/报告。技术问题不超过三项。
+1. 在正式分析执行前调用estimate_storage，向用户展示预计帧数、体积和区间；取得全量或裁剪的明确选择。全量未确认不得继续。
+2. create_video_analysis写入retain_mode和detector，快速返回task_id/version/workspace_ref，不等待长任务结束；向用户说明当前阶段。
+3. get_analysis_status查询阶段和检查点；不要高频忙轮询。非终态允许cancel_analysis，重复取消无新副作用，完成/已取消任务不被改回运行。
+4. 质量可用后get_quality_report，交视觉解释员检查容器/时长/可见性/时间映射；严重损坏、超时或原生全景为unsupported，关键对象不足为reshoot_required或partial。
+5. 仅在适用阶段读取get_stroke_events、get_groundstroke_timing、get_motion_metrics。结果没就绪先说明等待，不用自己的推测代填。
+6. 需要核对击球候选或指定帧段时调用get_evidence；整帧为evidence_frame，球心放大图为evidence_zoom。不得把框、锚点、置信度直接写成击球结论。
+7. render_evidence_overlay可请求frame/clip/trajectory，使用有效evidence_ids；资源须同task/version、哈希一致、可回到原时间。缺资源标不可用与修复，不以目标图替换。
+8. 把可靠观察交tennis-evidence-reasoning，再进入训练/报告。技术问题不超过三项。
 
 脚不见排除步伐/支撑/蹬转，球不见排除落地/来球时机/精确触球，拍不见排除拍头/降拍头。每项质量问题都有代表证据、影响和针对性重拍机位，不能只给“画面差”。遮挡/串线/跳变区间排除；时间映射失效不发布对应问题。
 

@@ -117,13 +117,22 @@ def far_frames(track: BallTrack, candidates: list[HitCandidate]) -> list[Evidenc
     rows: list[EvidenceFrame] = []
     for frame in sorted(track.points):
         point = track.points[frame]
-        markers = tuple(sorted(f"{c.basis}_anchor" for a, c in anchors.items() if a == frame))
+        markers = tuple(
+            sorted(
+                {
+                    "ball_racket_anchor" if c.basis == "ball_racket" else "ball_track_event"
+                    for a, c in anchors.items()
+                    if a == frame
+                }
+            )
+        )
         rows.append(
             EvidenceFrame(
                 frame=frame,
                 time_s=frame / track.fps,
                 ball=[point.x - half, point.y - half, point.x + half, point.y + half],
                 ball_confidence=point.peak,
+                ball_source=point.source,
                 pose_valid=False,
                 markers=markers,
                 candidate_id=None,

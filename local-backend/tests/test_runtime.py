@@ -275,7 +275,7 @@ def test_bad_contract_version_fails_its_check(config: HealthConfig) -> None:
         backend_version="0.1.0",
         public_root=config.public_root,
         internal_root=config.internal_root,
-        contract_version="2.0.0",
+        contract_version="1.1.0",
     )
     result = runtime_health(drifted, runner=ok_runner)
     assert codes(result)[CHECK_CONTRACT_VERSION] is False

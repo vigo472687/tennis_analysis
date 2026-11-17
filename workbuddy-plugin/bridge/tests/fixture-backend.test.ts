@@ -14,7 +14,7 @@ function fixture(t:{after:(fn:()=>void)=>unknown},delayMs=5,fault?:'timeout'|'cr
   t.after(()=>{backend.close();fs.rmSync(dataRoot,{recursive:true,force:true});});return {backend,dataRoot};
 }
 let sequence=0;
-function request(method:string,params:Record<string,unknown>,op:string|null=null):RequestEnvelope{return {contract_version:'1.1.0',request_id:`req-${++sequence}`,operation_id:op,method,params,simulation:true};}
+function request(method:string,params:Record<string,unknown>,op:string|null=null):RequestEnvelope{return {contract_version:'2.0.0',request_id:`req-${++sequence}`,operation_id:op,method,params,simulation:true};}
 function createParams(id='iphone-flat',op='create-1'){
   return {operation_id:op,fixture_id:id,media_ref:`media/${id}.mp4`,user:{age_band:'adult',handedness:'right',target_stroke:'forehand',goal:'timing',exercise_background:'beginner',safety:'clear'},consent:{consent_id:'c1',task_version:1,purposes:['analysis','retest','diagnostics'],text_version:'v1',confirmed:true,guardian_simulated:false,recipient_digest:null,materials_digest:null},primary_route:'technical_diagnosis',auxiliary_routes:[],subject_id:null,mirror_confirmed:true};
 }

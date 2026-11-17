@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
-import {ContractRegistry,type RequestEnvelope,type ResponseEnvelope,type WireError,type JsonObject} from './contracts.js';
+import {CONTRACT_VERSION,ContractRegistry,type RequestEnvelope,type ResponseEnvelope,type WireError,type JsonObject} from './contracts.js';
 import {PathBoundary} from './paths.js';
 
 interface Sample {
@@ -57,11 +57,11 @@ export class FixtureBackend {
     return response;
   }
   close():void{for(const task of this.tasks.values())if(task.timer)clearTimeout(task.timer);}
-  private reply(request:RequestEnvelope,result:unknown):ResponseEnvelope{return {contract_version:'1.1.0',request_id:request.request_id,ok:true,result,error:null,simulation:true};}
+  private reply(request:RequestEnvelope,result:unknown):ResponseEnvelope{return {contract_version:CONTRACT_VERSION,request_id:request.request_id,ok:true,result,error:null,simulation:true};}
   private failure(request:RequestEnvelope,code:string,stage:string,action:string):ResponseEnvelope{
     const safe=/^[A-Z][A-Z0-9_]+$/.test(code)?code:'ANALYSIS_FAILED';
     const error:WireError={code:safe,stage,retryable:action==='retry',user_action:action,retained:[],details_ref:null,simulation:true};
-    return {contract_version:'1.1.0',request_id:request.request_id,ok:false,result:null,error,simulation:true};
+    return {contract_version:CONTRACT_VERSION,request_id:request.request_id,ok:false,result:null,error,simulation:true};
   }
   private perform(method:string,p:JsonObject):unknown {
     if(method==='analysis.create')return this.create(p as unknown as CreateInput);

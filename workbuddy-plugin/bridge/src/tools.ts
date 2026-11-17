@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
-import {ContractRegistry,ContractError,type JsonObject,type RequestEnvelope,type ResponseEnvelope} from './contracts.js';
+import {CONTRACT_VERSION,ContractRegistry,ContractError,type JsonObject,type RequestEnvelope,type ResponseEnvelope} from './contracts.js';
 import {RuntimeStore} from './runtime-state.js';
 import {prepareRuntime,type PrepareDependencies,type PrepareInput} from './runtime-prepare.js';
 import {startRuntime,OriginalRequestQueue,type StartDependencies,type StartInput} from './runtime-start.js';
@@ -44,11 +44,11 @@ export class ToolDispatcher {
         }else if(tool.name==='runtime_start')result=await startRuntime(this.registry,this.options.store,input as unknown as StartInput,this.options.start);
         else if(tool.name==='runtime_repair')result=await repairRuntime(this.registry,this.options.store,input as unknown as RepairInput,this.options.repair);
         else result=await uninstallRuntime(this.registry,this.options.store,input as unknown as UninstallInput,this.options.uninstall);
-        simulation=result.simulation;return this.registry.response(tool.name,{contract_version:'1.1.0',request_id:requestId,ok:true,result,error:null,simulation});
+        simulation=result.simulation;return this.registry.response(tool.name,{contract_version:CONTRACT_VERSION,request_id:requestId,ok:true,result,error:null,simulation});
       }
       const state=this.options.store.snapshot().state;
       if(state!=='ready'||!this.options.start.isRunning())throw new ContractError(state==='not_initialized'?'RUNTIME_PREPARATION_REQUIRED':'RUNTIME_START_REQUIRED');
-      const request:RequestEnvelope={contract_version:'1.1.0',request_id:requestId,operation_id:tool.side_effect?String(input.operation_id):null,method:tool.method,params:input,simulation};this.registry.request(request);
+      const request:RequestEnvelope={contract_version:CONTRACT_VERSION,request_id:requestId,operation_id:tool.side_effect?String(input.operation_id):null,method:tool.method,params:input,simulation};this.registry.request(request);
       let response:ResponseEnvelope;
       if(tool.side_effect){const id=String(input.operation_id);this.queue.retain(id,canonical([tool.method,input]),()=>this.options.backend.call(request));response=await this.queue.resume(id) as ResponseEnvelope;}
       else response=await this.options.backend.call(request);
@@ -56,7 +56,7 @@ export class ToolDispatcher {
     }catch(error){
       const code=error instanceof ContractError?error.code:'BRIDGE_OPERATION_FAILED';
       const runtime=code.startsWith('RUNTIME')||code.includes('REPAIR')||code.includes('ARTIFACT');
-      const result:ResponseEnvelope={contract_version:'1.1.0',request_id:requestId,ok:false,result:null,error:{code,stage:runtime?'runtime':'input',retryable:false,user_action:runtime?'repair':'confirm',retained:[],details_ref:null,simulation},simulation};this.registry.validate('common','response',result);return result;
+      const result:ResponseEnvelope={contract_version:CONTRACT_VERSION,request_id:requestId,ok:false,result:null,error:{code,stage:runtime?'runtime':'input',retryable:false,user_action:runtime?'repair':'confirm',retained:[],details_ref:null,simulation},simulation};this.registry.validate('common','response',result);return result;
     }
   }
 }

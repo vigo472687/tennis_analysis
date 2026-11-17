@@ -76,6 +76,7 @@ def test_frames_round_trip_without_adding_judgements(store: EvidenceStore) -> No
         "time_s",
         "ball_box",
         "ball_confidence",
+        "ball_source",
         "racket_box",
         "racket_confidence",
         "pose_valid",

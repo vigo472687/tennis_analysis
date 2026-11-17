@@ -80,6 +80,7 @@ from tennis_backend.domain.models import (
 )
 from tennis_backend.export.package import SelectedMaterial, build_diagnostic_package
 from tennis_backend.runtime.health import HealthConfig, runtime_health
+from tennis_backend.storage.evidence_store import EvidenceStore
 from tennis_backend.storage.metadata import MetadataStore
 from tennis_backend.storage.resources import ResourceStore
 from tennis_backend.transport.server import serve_stdio
@@ -165,6 +166,10 @@ class StdioHandler:
             return self._fixture_stage(request)
         if method == "evidence.render":
             return self._render(request)
+        if method == "evidence.get":
+            return self._evidence_get(request)
+        if method == "analysis.estimate_storage":
+            return self._estimate_storage(request)
         if method == "target.generate":
             return self._target(request)
         if method == "sessions.compare":
@@ -327,8 +332,37 @@ class StdioHandler:
             version = outcome.version
             if outcome.replayed:
                 # replayed create: artifacts (if any) already exist from the
-                # first execution; the extraction ledger op handles retries
-                return service.task_summary(task_id, version)
+                # first execution. An unanswered detector prompt must still
+                # advance: the replay carries the ask forward and counts it,
+                # so the "three asks, then fallback" rule works even when the
+                # idempotency layer replays identical input.
+                from tennis_backend.analysis.detector_choice import MAX_PROMPTS
+
+                summary = service.task_summary(task_id, version)
+                has_ball = f"projects/{task_id}/v{version}/records/ball-evidence.json" in {
+                    r.path for r in ctx["resources"].resources(task_id, version)
+                }
+                if params.detector is None and not has_ball:
+                    prompts = self._detector_prompts(params.media_ref)
+                    prompts = min(prompts + 1, MAX_PROMPTS)
+                    self._record_detector_prompt(params.media_ref)
+                    if prompts >= MAX_PROMPTS:
+                        note = (
+                            f"已询问 {MAX_PROMPTS} 次仍未指定 detector;"
+                            "请在 analysis.create 请求中带上 detector（coco 或 wasb）后重新创建"
+                        )
+                    else:
+                        note = (
+                            f"需要指定检测器（重复请求，第 {prompts}/{MAX_PROMPTS} 次询问）："
+                            "近景用 coco，远景用 wasb"
+                        )
+                    summary = {
+                        **summary,
+                        "retained": [],
+                        "recovery_actions": ["ask"],
+                        "notes": [note],
+                    }
+                return summary
 
             # durable task-config (analysis mode + media ref) for later phases
             config = {
@@ -337,6 +371,8 @@ class StdioHandler:
                 "primary_route": params.primary_route,
                 "consent_id": params.consent.consent_id,
                 "subject_id": params.subject_id,
+                "retain_mode": params.retain_mode,
+                "detector": params.detector,
             }
             resources.publish_bytes(
                 task_id,
@@ -615,6 +651,67 @@ class StdioHandler:
                         f" requested={params.subject_id})",
                     ]
 
+                    # ---- ball detector resolution (contract 2.0.0 detector slot) ----
+                    # The expert names coco/wasb; when it does not, the backend
+                    # prompts (ReAct) up to MAX_PROMPTS per media_ref, then
+                    # applies the measured height-ratio fallback. The ratio is
+                    # computable here because subjects have just been extracted.
+                    from tennis_backend.analysis.detector_choice import (
+                        DetectorChoice,
+                        NeedDetector,
+                        resolve_detector,
+                        subject_height_ratio,
+                    )
+
+                    ratio = subject_height_ratio(
+                        [
+                            max((b["box"][3] - b["box"][1]) for b in record.boxes)
+                            for record in subjects_outcome.records
+                        ],
+                        normalized.media.probe.height,
+                    )
+                    choice = resolve_detector(
+                        params.detector,
+                        prompts_used=self._detector_prompts(params.media_ref),
+                        height_ratio=ratio,
+                    )
+                    if isinstance(choice, NeedDetector):
+                        self._record_detector_prompt(params.media_ref)
+                        prompt = resources.publish_bytes(
+                            task_id,
+                            version,
+                            f"projects/{task_id}/v{version}/records/detector-prompt.json",
+                            json.dumps(
+                                {
+                                    "prompts_used": choice.prompts_used,
+                                    "prompts_left": choice.prompts_left,
+                                    "options": list(choice.options),
+                                    "guidance": choice.guidance,
+                                    "subject_height_ratio": ratio,
+                                },
+                                ensure_ascii=False,
+                                indent=1,
+                            ).encode("utf-8"),
+                            kind="record",
+                            mime="application/json",
+                        )
+                        summary = service.task_summary(task_id)
+                        return {
+                            **summary,
+                            "retained": [prompt.resource_id],
+                            "recovery_actions": ["ask"],
+                            "notes": [
+                                *subjects_outcome.notes,
+                                f"需要指定检测器（第 {choice.prompts_used}/3 次询问）",
+                                choice.guidance,
+                                "pose 分析已暂停，指定 detector 后重新 create",
+                            ],
+                        }
+                    self._clear_detector_prompt(params.media_ref)
+                    detector_name = choice.detector
+                    if isinstance(choice, DetectorChoice) and choice.fallback:
+                        pose_notes.append(choice.note)
+
                     if plan.mode == "invalid":
                         # an unknown subject_id is an honest failure with the candidate list
                         # published — never a silent fallback to some other person
@@ -883,6 +980,75 @@ class StdioHandler:
                 kind="record",
                 mime="application/json",
             )
+            # ---- ball evidence (contract 2.0.0): detect, store, retain, write images ----
+            # One detector only, chosen above (expert or measured fallback).
+            ball_notes: list[str] = []
+            ball_record: Any = None
+            if "detector_name" in locals() and detector_name is not None:
+                from tennis_backend.application.evidence_run import run as _evidence_run
+
+                class _TaskCancel(CancellationToken):
+                    """Bridge the metadata cancel flag into the evidence run."""
+
+                    def __init__(self) -> None:
+                        super().__init__()
+                        self._check = task_cancelled
+
+                    def check_point(self) -> None:
+                        if self._check():
+                            raise ContractViolation(
+                                "cancelled during ball evidence", code="TASK_CANCELLED"
+                            )
+
+                with EvidenceStore(self._internal / "evidence.sqlite") as evidence_store:
+                    ball_outcome = _evidence_run(
+                        analysis_video,
+                        public_root=self._public,
+                        relative_evidence_dir=f"projects/{task_id}/v{version}/evidence",
+                        store=evidence_store,
+                        task_id=task_id,
+                        version=version,
+                        route=params.primary_route,
+                        retain_mode=params.retain_mode,
+                        uploaded_at=self._now(),
+                        detector=detector_name,
+                        subject_height_ratio=ratio,
+                        cancel=_TaskCancel(),
+                    )
+                ball_notes = list(ball_outcome.notes)
+                ball_record = resources.publish_bytes(
+                    task_id,
+                    version,
+                    f"projects/{task_id}/v{version}/records/ball-evidence.json",
+                    json.dumps(
+                        {
+                            "detector": ball_outcome.detector,
+                            "detector_fallback": ball_outcome.fallback,
+                            "fps": normalized.media.probe.fps,
+                            "width": normalized.media.probe.width,
+                            "height": normalized.media.probe.height,
+                            "retain_mode": params.retain_mode,
+                            "subject_height_ratio": ratio,
+                            "frames": ball_outcome.summary.frames,
+                            "candidates": ball_outcome.summary.candidates,
+                            "retained_ranges": [
+                                {"start": lo, "end": hi}
+                                for lo, hi in ball_outcome.summary.retained_ranges
+                            ],
+                            "images_written": len(ball_outcome.images),
+                        },
+                        ensure_ascii=False,
+                        indent=1,
+                    ).encode("utf-8"),
+                    kind="record",
+                    mime="application/json",
+                )
+                ball_notes.append(
+                    f"ball evidence: {ball_outcome.summary.candidates} candidates,"
+                    f" {len(ball_outcome.images)} frame images retained"
+                    f" (retain_mode={params.retain_mode}); evidence.get retrieves them"
+                )
+
             summary = service.task_summary(task_id)
             recovery = ["ask"] if subjects_outcome.requires_selection else ["none"]
             return {
@@ -897,6 +1063,7 @@ class StdioHandler:
                 "notes": [
                     *subjects_outcome.notes,
                     *pose_notes,
+                    *ball_notes,
                     "queries available: strokes (no events), timing (honest "
                     "states), metrics (2D proxies); evidence.render renders "
                     "frames/pose overlay/trajectory",
@@ -1465,6 +1632,273 @@ class StdioHandler:
         """The durable analysis mode of this task version (fixture default)."""
         payload = self._task_config_payload(ctx, task_id, version)
         return str(payload.get("analysis_mode", "fixture"))
+
+    def _ball_config_payload(
+        self, ctx: dict[str, Any], task_id: str, version: int
+    ) -> dict[str, Any]:
+        """Task config merged with the ball-evidence and detector-prompt records.
+
+        The evidence/estimate handlers need the detector, its origin (expert
+        or fallback), the frame geometry and the prompt state; those live in
+        records published at different pipeline stages, so they are layered
+        here in publication order.
+        """
+        payload = dict(self._task_config_payload(ctx, task_id, version))
+        resources: ResourceStore = ctx["resources"]
+        known = {resource.path for resource in resources.resources(task_id, version)}
+        base = f"projects/{task_id}/v{version}/records"
+        for name in ("detector-prompt.json", "ball-evidence.json"):
+            relative = f"{base}/{name}"
+            if relative not in known:
+                continue
+            path = self._public / relative
+            try:
+                payload.update(json.loads(path.read_text(encoding="utf-8")))
+            except (OSError, ValueError):
+                continue
+        return payload
+
+    # ------------------------------------------------------------------
+    # Ball evidence (contract 2.0.0): detector prompts and retrieval
+    # ------------------------------------------------------------------
+
+    def _detector_prompts(self, media_ref: str) -> int:
+        """How often the expert has been asked for this video's detector."""
+        path = self._internal / "detector-prompts.json"
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return 0
+        return int(data.get(media_ref, 0)) if isinstance(data, dict) else 0
+
+    def _bump_detector_prompts(self, media_ref: str, *, reset: bool) -> None:
+        """Count one unanswered prompt, or clear the count after an answer."""
+        path = self._internal / "detector-prompts.json"
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(data, dict):
+                data = {}
+        except (OSError, ValueError):
+            data = {}
+        if reset:
+            data.pop(media_ref, None)
+        else:
+            data[media_ref] = int(data.get(media_ref, 0)) + 1
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+
+    def _record_detector_prompt(self, media_ref: str) -> None:
+        self._bump_detector_prompts(media_ref, reset=False)
+
+    def _clear_detector_prompt(self, media_ref: str) -> None:
+        self._bump_detector_prompts(media_ref, reset=True)
+
+    def _evidence_resource(
+        self, path: Path, relative: str, kind: str, resource_id: str, *, simulation: bool
+    ) -> dict[str, Any]:
+        import hashlib
+
+        return {
+            "resource_id": resource_id,
+            "path": relative,
+            "mime": "image/jpeg",
+            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            "size_bytes": path.stat().st_size,
+            "kind": kind,
+            "simulation": simulation,
+        }
+
+    def _evidence_get(self, request: ValidatedRequest) -> dict[str, Any]:
+        """``evidence.get``: whole intervals of stored frames, never verdicts."""
+        from tennis_backend.contracts.validation import EvidenceInput
+
+        params = request.typed_params(EvidenceInput)
+        with self._services() as ctx:
+            config = self._ball_config_payload(ctx, params.task_id, params.version)
+            detector = str(config.get("detector") or "coco")
+            # caps are backend constants (user decision 2026-11-16): near-view
+            # action review 200, far-view trajectory 600
+            frame_limit = 600 if detector == "wasb" else 200
+
+            def empty(reason: str, message: str) -> dict[str, Any]:
+                return {
+                    "frames": [],
+                    "candidates": [],
+                    "trajectory": [],
+                    "window_level": None,
+                    "truncated": False,
+                    "reason": reason,
+                    "message": message,
+                    "simulation": request.simulation,
+                }
+
+            store_path = self._internal / "evidence.sqlite"
+            if not store_path.is_file():
+                return empty("not_retained", "该任务未保存球证据（检测未运行或任务较早）")
+            from tennis_backend.storage.evidence_store import EvidenceStore
+
+            with EvidenceStore(store_path) as store:
+                interval = store.retrieve(
+                    params.task_id,
+                    params.version,
+                    now=self._now(),
+                    candidate_id=params.candidate_id,
+                    frame_start=params.frame_start,
+                    frame_end=params.frame_end,
+                    frame_limit=frame_limit,
+                )
+                stored_candidates = store.candidates(params.task_id, params.version)
+            if interval.reason is not None and not interval.frames:
+                return empty(interval.reason, interval.message)
+
+            fps = float(config.get("fps") or 30.0)
+            width = int(config.get("width") or 0)
+            height = int(config.get("height") or 0)
+            frames_out: list[dict[str, Any]] = []
+            trajectory: list[dict[str, Any]] = []
+            zoom_wanted = params.include_zoom
+            for item in interval.frames:
+                image_path = self._public / (
+                    f"projects/{params.task_id}/v{params.version}/evidence/frames/"
+                    f"f{item.frame:06d}.jpg"
+                )
+                if not image_path.is_file():
+                    continue  # metadata without its image is not returned
+                base = f"ev-{params.task_id}-v{params.version}-f{item.frame:06d}"
+                zoom_rel: str | None = None
+                zoom_payload = None
+                if zoom_wanted:
+                    zoom_path = self._public / (
+                        f"projects/{params.task_id}/v{params.version}/evidence/frames/"
+                        f"f{item.frame:06d}-zoom.jpg"
+                    )
+                    if zoom_path.is_file():
+                        zoom_rel = (
+                            f"projects/{params.task_id}/v{params.version}/evidence/frames/"
+                            f"f{item.frame:06d}-zoom.jpg"
+                        )
+                        zoom_payload = self._evidence_resource(
+                            zoom_path,
+                            zoom_rel,
+                            "evidence_zoom",
+                            f"{base}-zoom",
+                            simulation=request.simulation,
+                        )
+                frames_out.append(
+                    {
+                        "frame": item.frame,
+                        "time_s": round(item.time_s, 3),
+                        "image": self._evidence_resource(
+                            image_path,
+                            f"projects/{params.task_id}/v{params.version}/evidence/frames/"
+                            f"f{item.frame:06d}.jpg",
+                            "evidence_frame",
+                            base,
+                            simulation=request.simulation,
+                        ),
+                        "zoom": zoom_payload,
+                        "ball_box": None if item.ball is None else [round(v, 1) for v in item.ball],
+                        "ball_confidence": (
+                            None if item.ball_confidence is None else round(item.ball_confidence, 3)
+                        ),
+                        "racket_box": (
+                            None if item.racket is None else [round(v, 1) for v in item.racket]
+                        ),
+                        "racket_confidence": (
+                            None
+                            if item.racket_confidence is None
+                            else round(item.racket_confidence, 3)
+                        ),
+                        "pose_valid": item.pose_valid,
+                        "markers": list(item.markers),
+                        "candidate_id": item.candidate_id,
+                        "frames_to_anchor": item.frames_to_anchor,
+                    }
+                )
+                if item.ball is not None and width > 0 and height > 0:
+                    trajectory.append(
+                        {
+                            "frame": item.frame,
+                            "original_s": round(item.time_s, 3),
+                            "x": round(
+                                max(0.0, min(1.0, (item.ball[0] + item.ball[2]) / 2 / width)), 4
+                            ),
+                            "y": round(
+                                max(0.0, min(1.0, (item.ball[1] + item.ball[3]) / 2 / height)), 4
+                            ),
+                            "source": item.ball_source or "detected",
+                            "peak": (
+                                None
+                                if item.ball_confidence is None
+                                else round(item.ball_confidence, 3)
+                            ),
+                        }
+                    )
+            candidates_out = []
+            for candidate in stored_candidates:
+                seconds = candidate.interval_start / fps
+                end_seconds = candidate.interval_end / fps
+                candidates_out.append(
+                    {
+                        "candidate_id": candidate.candidate_id,
+                        "interval_start_frame": candidate.interval_start,
+                        "interval_end_frame": candidate.interval_end,
+                        "original_s": {
+                            "start": round(seconds, 3),
+                            "end": round(end_seconds, 3),
+                        },
+                        "basis": candidate.basis,
+                        "basis_error_frames": candidate.basis_error_frames,
+                        "confidence": round(candidate.confidence, 3),
+                        "window_level": candidate.window_level,
+                    }
+                )
+            return {
+                "frames": frames_out,
+                "candidates": candidates_out,
+                "trajectory": trajectory,
+                "window_level": interval.window_level,
+                "truncated": interval.truncated,
+                "reason": interval.reason,
+                "message": interval.message,
+                "simulation": request.simulation,
+            }
+
+    def _estimate_storage(self, request: ValidatedRequest) -> dict[str, Any]:
+        """``analysis.estimate_storage``: frames and bytes for the user's choice."""
+        from tennis_backend.application.evidence_run import estimate as run_estimate
+        from tennis_backend.contracts.validation import StorageInput
+
+        params = request.typed_params(StorageInput)
+        with self._services() as ctx:
+            config = self._ball_config_payload(ctx, params.task_id, params.version)
+            media_ref = config.get("media_ref")
+            if not media_ref:
+                raise ContractViolation(
+                    "task has no media_ref; storage needs the input video",
+                    code="INGEST_VIDEO_MISSING",
+                )
+            video = (self._data_root / str(media_ref)).resolve()
+            if not video.is_relative_to(self._data_root) or not video.is_file():
+                raise ContractViolation(
+                    f"input video {media_ref} is missing from the data root",
+                    code="INGEST_VIDEO_MISSING",
+                )
+            estimate = run_estimate(
+                video,
+                route=str(config.get("primary_route") or "technical_diagnosis"),
+                retain_mode=params.retain_mode,
+                detector=config.get("detector"),
+                subject_height_ratio=config.get("subject_height_ratio"),
+            )
+            return {
+                "mode": estimate["mode"],
+                "retained_frames": estimate["retained_frames"],
+                "estimated_bytes": estimate["estimated_bytes"],
+                "ranges": estimate["ranges"],
+                "requires_confirmation": estimate["requires_confirmation"],
+                "simulation": request.simulation,
+            }
 
     def _real_records(self, ctx: dict[str, Any], task_id: str, version: int) -> dict[str, Any]:
         """Load the published pose records for one real task version.

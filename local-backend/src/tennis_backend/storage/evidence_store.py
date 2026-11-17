@@ -57,6 +57,7 @@ _SCHEMA = (
         time_s REAL NOT NULL,
         ball_box TEXT,
         ball_confidence REAL,
+        ball_source TEXT,
         racket_box TEXT,
         racket_confidence REAL,
         pose_valid INTEGER NOT NULL,
@@ -104,6 +105,7 @@ class EvidenceFrame:
     time_s: float
     ball: list[float] | None = None
     ball_confidence: float | None = None
+    ball_source: str | None = None
     racket: list[float] | None = None
     racket_confidence: float | None = None
     pose_valid: bool = False
@@ -119,6 +121,7 @@ class EvidenceFrame:
             "ball_confidence": (
                 None if self.ball_confidence is None else round(self.ball_confidence, 3)
             ),
+            "ball_source": self.ball_source,
             "racket_box": None if self.racket is None else [round(v, 1) for v in self.racket],
             "racket_confidence": (
                 None if self.racket_confidence is None else round(self.racket_confidence, 3)
@@ -174,6 +177,16 @@ class EvidenceStore:
             with self._transaction():
                 for statement in _SCHEMA:
                     self._connection.execute(statement)
+                # a store written before ball_source existed keeps its rows;
+                # the column is added in place (sqlite ALTER TABLE)
+                columns = {
+                    row["name"]
+                    for row in self._connection.execute("PRAGMA table_info(evidence_frames)")
+                }
+                if columns and "ball_source" not in columns:
+                    self._connection.execute(
+                        "ALTER TABLE evidence_frames ADD COLUMN ball_source TEXT"
+                    )
         except BaseException:
             self.close()
             raise
@@ -216,7 +229,7 @@ class EvidenceStore:
             for item in rows:
                 self._connection.execute(
                     "INSERT OR REPLACE INTO evidence_frames VALUES"
-                    " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     (
                         task_id,
                         version,
@@ -224,6 +237,7 @@ class EvidenceStore:
                         item.time_s,
                         None if item.ball is None else json.dumps(item.ball),
                         item.ball_confidence,
+                        item.ball_source,
                         None if item.racket is None else json.dumps(item.racket),
                         item.racket_confidence,
                         int(item.pose_valid),
@@ -466,6 +480,7 @@ def _frame_of(row: sqlite3.Row) -> EvidenceFrame:
         time_s=row["time_s"],
         ball=None if row["ball_box"] is None else json.loads(row["ball_box"]),
         ball_confidence=row["ball_confidence"],
+        ball_source=row["ball_source"],
         racket=None if row["racket_box"] is None else json.loads(row["racket_box"]),
         racket_confidence=row["racket_confidence"],
         pose_valid=bool(row["pose_valid"]),

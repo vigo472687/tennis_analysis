@@ -8,4 +8,4 @@ training prose live in this package.
 __version__ = "0.1.0"
 
 #: Frozen wire contract this backend implements (contracts/v1).
-CONTRACT_VERSION = "1.1.0"
+CONTRACT_VERSION = "2.0.0"

@@ -276,7 +276,7 @@ def test_x_tools_registry_matches_frozen_baseline(registry: ContractRegistry) ->
     baseline = json.loads(BASELINE_PATH.read_text(encoding="utf-8"))
     expected = {tool["method"]: tool for tool in baseline["tools"]}
     actual = {tool.method: tool for tool in registry.tools}
-    assert len(actual) == 17
+    assert len(actual) == 19
     assert set(actual) == set(expected)
     for method, tool in actual.items():
         want = expected[method]
@@ -335,7 +335,7 @@ def test_valid_envelopes_are_accepted(registry: ContractRegistry) -> None:
 
 
 def test_contract_version_mismatch_is_rejected(registry: ContractRegistry) -> None:
-    for version in ("1.0.0", "2.0.0", "1"):
+    for version in ("1.0.0", "1.1.0", "1"):
         with pytest.raises(ContractViolation) as envelope_error:
             validate_request(
                 registry,
@@ -434,7 +434,7 @@ def test_method_specific_input_shapes_are_enforced(registry: ContractRegistry) -
                 {
                     "operation_id": "op-prepare-1",
                     "consent_confirmed": False,
-                    "target_version": "1.1.0",
+                    "target_version": "2.0.0",
                     "intent": "prepare",
                     "scope_digest": "scope-1",
                 },
@@ -451,7 +451,7 @@ def test_method_specific_output_shapes_are_enforced(registry: ContractRegistry) 
         "runtime.status",
         {
             "state": "ready",
-            "version": "1.1.0",
+            "version": "2.0.0",
             "backend": "fixture",
             "checks": [{"code": "ffmpeg-present", "passed": True}],
             "retained": [],
@@ -816,7 +816,7 @@ def test_typed_shapes_stay_frozen(registry: ContractRegistry) -> None:
 def test_runtime_result_backend_is_bounded(registry: ContractRegistry) -> None:
     result = {
         "state": "ready",
-        "version": "1.1.0",
+        "version": "2.0.0",
         "backend": "workbuddy-cloud",
         "checks": [],
         "retained": [],

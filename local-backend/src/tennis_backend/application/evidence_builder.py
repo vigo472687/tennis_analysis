@@ -58,9 +58,21 @@ def _best(boxes: list[list[float]], floor: float) -> list[float] | None:
     return max(kept, key=lambda b: b[4]) if kept else None
 
 
+#: Marker names per basis, as the frozen contract's ``markers`` enum spells them.
+_BASIS_MARKERS = {
+    "ball_racket": "ball_racket_anchor",
+    "ball_track": "ball_track_event",
+    "pose_only": "wrist_peak",
+}
+
+
 def _markers_at(candidates: list[hits.HitCandidate], frame: int) -> set[str]:
     """Every basis whose anchor sits on ``frame`` (a frame may carry several)."""
-    return {f"{c.basis}_anchor" for c in candidates if c.anchor_frame == frame}
+    markers = set()
+    for c in candidates:
+        if c.anchor_frame == frame:
+            markers.add(_BASIS_MARKERS.get(c.basis, f"{c.basis}_anchor"))
+    return markers
 
 
 def plan_retention(
@@ -152,6 +164,7 @@ def build_evidence(
                 time_s=frame / scan.fps,
                 ball=None if ball is None else ball[:4],
                 ball_confidence=None if ball is None else ball[4],
+                ball_source=None if ball is None else "detected",
                 racket=None if racket is None else racket[:4],
                 racket_confidence=None if racket is None else racket[4],
                 pose_valid=pose.get(frame, False),

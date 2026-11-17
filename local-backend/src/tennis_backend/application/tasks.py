@@ -53,7 +53,7 @@ from tennis_backend.storage.metadata import MetadataStore
 #: reuse the same wire method, so the ledger binds them under it too.
 CREATE_METHOD = "analysis.create"
 
-_CONTRACT_VERSION = "1.1.0"
+_CONTRACT_VERSION = "2.0.0"
 
 #: Stable codes raised as :class:`DomainViolation` (prefix added by the base).
 _GAPS_CODE = "INPUT_INCOMPLETE"

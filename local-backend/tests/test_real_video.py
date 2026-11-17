@@ -81,6 +81,9 @@ def create_real_params(operation_id: str, media_ref: str) -> dict[str, Any]:
         "operation_id": operation_id,
         "analysis_mode": "real_video",
         "media_ref": media_ref,
+        # the detector slot (contract 2.0.0): without it the backend pauses
+        # after subjects and asks (see the prompt tests below)
+        "detector": "coco",
         "user": {
             "age_band": "adult",
             "handedness": "right",
@@ -281,7 +284,7 @@ def test_missing_ingest_video_refused(handler: StdioHandler, tmp_path: Path) -> 
 
 def test_real_video_with_fixture_id_refused(handler: StdioHandler, tmp_path: Path) -> None:
     # masquerading a real video as a frozen sample is refused at the model
-    # layer (contract 1.1.0); over the wire it surfaces as REQUEST_PARAMS_INVALID
+    # layer (contract 2.0.0); over the wire it surfaces as REQUEST_PARAMS_INVALID
     from pydantic import ValidationError
 
     params = create_real_params("op-rv-f", "ingest/tennis.mp4")

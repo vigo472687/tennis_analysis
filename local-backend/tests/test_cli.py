@@ -108,7 +108,7 @@ def envelope(
     simulation: bool = True,
 ) -> dict[str, Any]:
     return {
-        "contract_version": "1.1.0",
+        "contract_version": "2.0.0",
         "request_id": request_id,
         "operation_id": operation_id,
         "method": method,
@@ -365,4 +365,4 @@ def test_cli_help_and_version_unchanged(tmp_path: Path) -> None:
         check=True,
     )
     assert "tennis-backend" in version.stdout
-    assert "contract 1.1.0" in version.stdout
+    assert "contract 2.0.0" in version.stdout

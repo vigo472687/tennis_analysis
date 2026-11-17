@@ -1,23 +1,23 @@
 {
- "contract_version": "1.1.0",
+ "contract_version": "2.0.0",
  "config_version": "fixture-config-1",
- "frozen_at": "2026-11-06T04:19:40.890Z",
+ "frozen_at": "2026-11-17T10:21:09.068Z",
  "simulation": true,
  "files": {
-  "contracts/v1/analysis.schema.json": "bd50266575ea76a2dd95af173a8e4f2f76cac45f068435dfbfd80804361b564a",
-  "contracts/v1/common.schema.json": "4ed375aed437ee69dbf67a5806eda46ecd5f7ccb0e75b88ebce562fdf53a9ca5",
+  "contracts/v1/analysis.schema.json": "d87b9879a86b3239a12ccf3be8f9e2072b497f347edf2cfd4444e4477aec994d",
+  "contracts/v1/common.schema.json": "3c5ba3dd151f095156215b035431886a5d42526f82bb5107e67a35d809509bbf",
   "contracts/v1/deletion.schema.json": "92db9d212ecd5cbb29f7a17d24d201f2a2851a283212bf2e36941d7bfe1b23d6",
   "contracts/v1/error.schema.json": "005064c4a08ac3e705b4be9b87aa6762cc3e7b7c633b14d3b3ec1ed4ddb68124",
   "contracts/v1/feedback.schema.json": "32118d2ad19e52e0a7ebfb98f4733bd077e97ffcb166d881e863baeb13a66a96",
   "contracts/v1/media.schema.json": "def068225dbef03da7090e5a75555050a43e5ce49b8da5688aebdbbc8696cfe0",
   "contracts/v1/report-input.schema.json": "3e9b791f042e5830903faac746781d2242031ec656ac87116b972581d2dbbc37",
   "contracts/v1/runtime.schema.json": "2d183e2029b8d26412ec68260878dd816ba6d1c771e57fa3fe3b46b8bff54907",
-  "contracts/v1/task.schema.json": "6183e5892a017b9f503a61d3db65bf7134ad8c17d1e09742678add952fb845ce",
+  "contracts/v1/task.schema.json": "2f9fef890b16cb7c7b79f12484ff2040600b57e0396581c6e0cc1c0b7772884c",
   "fixtures/expected/actions.json": "bac4dfb5b0d429e038fbd8365d1032dcfd5811f7a0983cb945d9e9df6e48427a",
   "fixtures/expected/compatibility.json": "0455880e873ca444ee47faf3fffc62b84c8e44ac65aa7280f7dba6784d76c5a2",
   "fixtures/expected/dialogues.json": "cd352456018eb60ff826fc0954a171e189bbcc01700d91f68a636aacbb21cecd",
   "fixtures/expected/lifecycle.json": "74c5fa2a772a8a704868e305e87ea0e7ba1b4302eacf92c8b77f9866db6403cc",
-  "fixtures/expected/protocol.json": "1a0cd33cc0043a3e58a587277d12dd40322db93a31bb1969dd549045b7515bae",
+  "fixtures/expected/protocol.json": "2d0fa5c57671a5c91350efc04ccf58ba10c8d3e446fe970441f05efed76c04d2",
   "fixtures/expected/report-states.json": "f95ae71a977e294479fa85f144950da6b74c888036e3fc95919c9d1b6e51a430",
   "fixtures/expected/resources.json": "03a0efd2a8a40b8228bf149f4c1a9b08e9aa14ac32bfbb06886eabc056520b05",
   "fixtures/expected/visibility.json": "8045b244a0e84e0774ee0aa25f445ef43372b735ffaa138339f967440148c588",
@@ -81,6 +81,22 @@
    "method": "analysis.metrics",
    "input_ref": "https://tennis.local/contracts/v1/task.schema.json#/definitions/lookup",
    "output_ref": "https://tennis.local/contracts/v1/analysis.schema.json#/definitions/metrics_result",
+   "side_effect": false,
+   "purposes": []
+  },
+  {
+   "name": "get_evidence",
+   "method": "evidence.get",
+   "input_ref": "https://tennis.local/contracts/v1/analysis.schema.json#/definitions/evidence_input",
+   "output_ref": "https://tennis.local/contracts/v1/analysis.schema.json#/definitions/evidence_result",
+   "side_effect": false,
+   "purposes": []
+  },
+  {
+   "name": "estimate_storage",
+   "method": "analysis.estimate_storage",
+   "input_ref": "https://tennis.local/contracts/v1/analysis.schema.json#/definitions/storage_input",
+   "output_ref": "https://tennis.local/contracts/v1/analysis.schema.json#/definitions/storage_estimate",
    "side_effect": false,
    "purposes": []
   },
@@ -175,9 +191,11 @@
  ],
  "verification_evidence": [
   "integration/reports/checkpoints/AG-C01.log",
-  "integration/reports/checkpoints/AG-C02.log"
+  "integration/reports/checkpoints/AG-C02.log",
+  "integration/reports/tasks/CX-015-v2.log"
  ],
  "notes": [
-  "1.1.0 (2026-11-09/10): envelope version bump + create_input.analysis_mode (optional, conditional fixture_id) — approved minor change, see 005 后端重构/PLAN-V1.md"
+  "1.1.0 (2026-11-09/10): envelope version bump + create_input.analysis_mode (optional, conditional fixture_id) — approved minor change, see 005 后端重构/PLAN-V1.md",
+  "2.0.0 (2026-11-17): V2 evidence.get + analysis.estimate_storage, evidence_zoom, hit/trajectory definitions, create retain_mode/detector; backend wiring remains a separate handoff step."
  ]
 }

@@ -43,7 +43,7 @@ node scripts/verify-video-experience.mjs /path/to/empty-scene.mp4 empty
 
 ## 原研发调试台
 
-以下内容仅描述 `/debug`，其固定场景和冻结 Contract v1 入口保留用于研发检查。真实视频通过独立 `/api/experience/videos` 处理。
+以下内容仅描述 `/debug`，其固定场景和冻结 Contract V2 入口保留用于研发检查。真实视频通过独立 `/api/experience/videos` 处理。
 
 这是一个仅在本机运行的研发与验收工作台，用于逐步验证
 [`网球姿态捕捉与训练建议应用-用户故事-V02.md`](../../002%20PRD/%E7%BD%91%E7%90%83%E5%A7%BF%E6%80%81%E6%8D%95%E6%8D%89%E4%B8%8E%E8%AE%AD%E7%BB%83%E5%BB%BA%E8%AE%AE%E5%BA%94%E7%94%A8-%E7%94%A8%E6%88%B7%E6%95%85%E4%BA%8B-V02.md)
@@ -82,7 +82,7 @@ npm run debug-console
 2. 选择故事后，在“场景步骤”中逐步运行。每一步保留独立结果和原始 JSON。
 3. 标准分析、兼容性、授权、多人对象、安全停止、复测比较等分析场景默认使用 Fixture，并持续显示模拟标识。
 4. 本地运行环境场景使用 Python，验证真实进程、版本、Contract 和 13 项环境检查。
-5. 在“契约工具”中使用 Contract Registry 动态加载的 17 个工具；结构化表单和原始 JSON 共用同一服务端校验。
+5. 在“契约工具”中使用 Contract Registry 动态加载的 19 个工具；结构化表单和原始 JSON 共用同一服务端校验。
 6. 在“任务资源”中检查当前会话任务、证据 PNG、慢动作 MP4、目标姿态和诊断 JSON。
 7. 在“运行诊断”中查看最近 200 条脱敏调用记录、Fixture 故障模式和危险操作确认门槛。
 
@@ -91,7 +91,7 @@ npm run debug-console
 | 范围 | 当前状态 |
 |---|---|
 | Python 运行环境启动、停止、重启、健康检查 | 真实执行 |
-| Contract v1 的 17 个工具与输入输出校验 | 真实 Bridge 往返 |
+| Contract V2 的 19 个工具与输入输出校验 | 真实 Bridge 往返 |
 | 固定样本分析、证据、比较、故障对照 | Fixture 模拟 |
 | 真实任意视频姿态、球和球拍识别 | 未实现 |
 | WorkBuddy 对话、公开资料研究、报告编排、训练计划、教练共识和邮件发送 | 不在本工作台执行 |

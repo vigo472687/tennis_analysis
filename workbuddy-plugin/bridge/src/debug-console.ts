@@ -5,7 +5,7 @@ import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import type {AddressInfo} from 'node:net';
-import {ContractRegistry,ContractError,type JsonObject,type ResponseEnvelope} from './contracts.js';
+import {CONTRACT_VERSION,ContractRegistry,ContractError,type JsonObject,type ResponseEnvelope} from './contracts.js';
 import {fixtureCatalog,storyCatalog} from './debug-console-catalog.js';
 import {appScript,page,styles} from './debug-console-ui.js';
 import {FixtureBackend} from './fixture-backend.js';
@@ -21,7 +21,6 @@ type Outcome='success'|'failure'|'pending';
 type FixtureFault='none'|'timeout'|'crash'|'invalid_response'|'delete_partial';
 
 const CONSOLE_VERSION='0.2.0';
-const CONTRACT_VERSION='1.1.0';
 const BACKEND_VERSION='0.1.0';
 const DEFAULT_HOST='127.0.0.1';
 const DEFAULT_PORT=4178;
@@ -140,18 +139,18 @@ class DebugRuntime {
       if(mode==='fixture'){
         const ready=fs.existsSync(path.join(fixtureRoot,'manifest.json'))&&fs.existsSync(path.join(assetRoot,'iphone-flat.mp4'));
         if(!ready)throw new ContractError('FIXTURE_ASSET_MISSING');
-        return [{code:'fixture_assets_ready',passed:true},{code:'contract_version_1_0_0',passed:true}];
+        return [{code:'fixture_assets_ready',passed:true},{code:'contract_version_2_0_0',passed:true}];
       }
       const checks=[
         {code:'python_project_present',passed:fs.existsSync(path.join(projectRoot,'pyproject.toml'))},
         {code:'python_lock_present',passed:fs.existsSync(path.join(projectRoot,'uv.lock'))},
-        {code:'contract_version_1_0_0',passed:fs.existsSync(path.join(contractRoot,'common.schema.json'))}
+        {code:'contract_version_2_0_0',passed:fs.existsSync(path.join(contractRoot,'common.schema.json'))}
       ];
       if(checks.some(check=>!check.passed))throw new ContractError('PYTHON_ARTIFACT_MISSING');
       return checks;
     };
     const health=async()=>{
-      if(mode==='fixture')return [{code:'fixture_ready',passed:this.fixtureRunning},{code:'contract_version_1_0_0',passed:true}];
+      if(mode==='fixture')return [{code:'fixture_ready',passed:this.fixtureRunning},{code:'contract_version_2_0_0',passed:true}];
       const reply=await this.process.call({contract_version:CONTRACT_VERSION,request_id:`health-${randomUUID()}`,operation_id:null,method:'runtime.status',params:{runtime_requirement:'required'},simulation:false});
       if(!reply.ok)throw new ContractError(reply.error?.code||'BACKEND_HEALTH_FAILED');
       const result=reply.result as RuntimeSnapshot;

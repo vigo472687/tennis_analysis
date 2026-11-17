@@ -70,7 +70,7 @@ def snapshot(
         "stroke_kind": str(strokes["events"][0]["kind"]),
         "subject_id": "person-1",
         "config_version": "fixture-config-1",
-        "contract_version": "1.1.0",
+        "contract_version": "2.0.0",
         "mirror_confirmed": True,
         "safety": "clear",
         "protocol": PROTOCOL,

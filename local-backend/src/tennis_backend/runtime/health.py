@@ -40,7 +40,7 @@ from tennis_backend.contracts.validation import (
 )
 
 #: The frozen shared contract version this backend implements.
-_FROZEN_CONTRACT_VERSION = "1.1.0"
+_FROZEN_CONTRACT_VERSION = "2.0.0"
 
 #: Minimum Python and tool versions this prototype needs.
 _MINIMUM_PYTHON = (3, 11)

@@ -16,7 +16,7 @@ import {actionSelectionScript} from './action-selection-client.js';
 import {phase4Script} from './phase4-client.js';
 import {Phase4Media} from './phase4-media.js';
 import {Phase4Service} from './phase4-service.js';
-import {ContractRegistry} from './contracts.js';
+import {CONTRACT_VERSION,ContractRegistry} from './contracts.js';
 import {Phase5Service} from './phase5-service.js';
 import {phase5Script} from './phase5-client.js';
 import {ExpertPolicy,ExpertError} from './expert-policy.js';
@@ -124,7 +124,7 @@ export async function startPhase1Console(options:{repoRoot:string;port?:number;h
       if(req.method==='POST'&&url.pathname==='/api/phase4/render'){const input=await body(req);json(res,200,await phase4.render(String(input.workspace_ref||''),String(input.kind||''),input.subject_id===undefined?undefined:String(input.subject_id)));return;}
       if(req.method==='GET'&&url.pathname==='/phase4/resource'){const resource=phase4Media.resource(url.searchParams.get('token')||'');if(resource.mime==='image/png'){res.writeHead(200,{...SECURITY,'Content-Type':'image/png','Content-Length':fs.statSync(resource.file).size});fs.createReadStream(resource.file).on('error',()=>res.destroy()).pipe(res);return;}stream(req,res,resource.file);return;}
       if(req.method==='GET'&&url.pathname==='/api/phase1/config'){
-        json(res,200,{default_data_root:path.join(repoRoot,'tmp/phase1-workbench-data'),contract_version:'1.1.0',create_params:createFixtureParams('op-example')});return;
+        json(res,200,{default_data_root:path.join(repoRoot,'tmp/phase1-workbench-data'),contract_version:CONTRACT_VERSION,create_params:createFixtureParams('op-example')});return;
       }
       if(req.method==='POST'&&url.pathname==='/api/phase1/start'){
         const input=await body(req);if(input.data_root!==null&&typeof input.data_root!=='string')throw new Phase1Error('DATA_ROOT_INVALID',400);

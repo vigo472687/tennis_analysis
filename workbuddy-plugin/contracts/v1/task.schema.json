@@ -1,297 +1,345 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://tennis.local/contracts/v1/task.schema.json",
-  "title": "Tennis task v1",
-  "definitions": {
+ "$schema": "http://json-schema.org/draft-07/schema#",
+ "$id": "https://tennis.local/contracts/v1/task.schema.json",
+ "title": "Tennis task v1",
+ "definitions": {
+  "user": {
+   "type": "object",
+   "properties": {
+    "age_band": {
+     "type": "string",
+     "enum": [
+      "adult",
+      "youth"
+     ]
+    },
+    "handedness": {
+     "type": "string",
+     "enum": [
+      "left",
+      "right",
+      "ambidextrous"
+     ]
+    },
+    "target_stroke": {
+     "type": "string",
+     "enum": [
+      "forehand",
+      "single_backhand",
+      "double_backhand",
+      "serve",
+      "forehand_volley",
+      "backhand_volley",
+      "footwork"
+     ]
+    },
+    "goal": {
+     "type": "string",
+     "minLength": 1,
+     "maxLength": 1000
+    },
+    "exercise_background": {
+     "type": "string",
+     "minLength": 1,
+     "maxLength": 1000
+    },
+    "safety": {
+     "type": "string",
+     "enum": [
+      "clear",
+      "pain",
+      "injury",
+      "dizziness",
+      "worsening",
+      "rehab",
+      "fatigue",
+      "uncertain"
+     ]
+    }
+   },
+   "required": [
+    "age_band",
+    "handedness",
+    "target_stroke",
+    "goal",
+    "exercise_background",
+    "safety"
+   ],
+   "additionalProperties": false
+  },
+  "create_input": {
+   "type": "object",
+   "properties": {
+    "operation_id": {
+     "$ref": "common.schema.json#/definitions/id"
+    },
+    "fixture_id": {
+     "$ref": "common.schema.json#/definitions/id"
+    },
+    "media_ref": {
+     "$ref": "common.schema.json#/definitions/relative_path"
+    },
     "user": {
-      "type": "object",
-      "properties": {
-        "age_band": {
-          "type": "string",
-          "enum": [
-            "adult",
-            "youth"
-          ]
-        },
-        "handedness": {
-          "type": "string",
-          "enum": [
-            "left",
-            "right",
-            "ambidextrous"
-          ]
-        },
-        "target_stroke": {
-          "type": "string",
-          "enum": [
-            "forehand",
-            "single_backhand",
-            "double_backhand",
-            "serve",
-            "forehand_volley",
-            "backhand_volley",
-            "footwork"
-          ]
-        },
-        "goal": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 1000
-        },
-        "exercise_background": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 1000
-        },
-        "safety": {
-          "type": "string",
-          "enum": [
-            "clear",
-            "pain",
-            "injury",
-            "dizziness",
-            "worsening",
-            "rehab",
-            "fatigue",
-            "uncertain"
-          ]
-        }
-      },
-      "required": [
-        "age_band",
-        "handedness",
-        "target_stroke",
-        "goal",
-        "exercise_background",
-        "safety"
-      ],
-      "additionalProperties": false
+     "$ref": "task.schema.json#/definitions/user"
     },
-    "create_input": {
-      "type": "object",
-      "properties": {
-        "operation_id": {
-          "$ref": "common.schema.json#/definitions/id"
-        },
-        "fixture_id": {
-          "$ref": "common.schema.json#/definitions/id"
-        },
-        "media_ref": {
-          "$ref": "common.schema.json#/definitions/relative_path"
-        },
-        "user": {
-          "$ref": "task.schema.json#/definitions/user"
-        },
-        "consent": {
-          "$ref": "common.schema.json#/definitions/consent"
-        },
-        "primary_route": {
-          "type": "string",
-          "enum": [
-            "question_answer",
-            "tactics",
-            "technical_diagnosis",
-            "style_optimization"
-          ]
-        },
-        "auxiliary_routes": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "enum": [
-              "question_answer",
-              "tactics",
-              "technical_diagnosis",
-              "style_optimization"
-            ]
-          },
-          "maxItems": 2,
-          "uniqueItems": true
-        },
-        "subject_id": {
-          "anyOf": [
-            {
-              "$ref": "common.schema.json#/definitions/id"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "mirror_confirmed": {
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "operation_id",
-        "fixture_id",
-        "media_ref",
-        "user",
-        "consent",
-        "primary_route",
-        "auxiliary_routes",
-        "subject_id",
-        "mirror_confirmed"
-      ],
-      "additionalProperties": false
+    "consent": {
+     "$ref": "common.schema.json#/definitions/consent"
     },
-    "lookup": {
-      "type": "object",
-      "properties": {
-        "task_id": {
-          "$ref": "common.schema.json#/definitions/id"
-        },
-        "version": {
-          "type": "integer",
-          "minimum": 1
-        }
-      },
-      "required": [
-        "task_id",
-        "version"
-      ],
-      "additionalProperties": false
+    "primary_route": {
+     "type": "string",
+     "enum": [
+      "question_answer",
+      "tactics",
+      "technical_diagnosis",
+      "style_optimization"
+     ]
     },
-    "cancel_input": {
-      "type": "object",
-      "properties": {
-        "operation_id": {
-          "$ref": "common.schema.json#/definitions/id"
-        },
-        "task_id": {
-          "$ref": "common.schema.json#/definitions/id"
-        },
-        "version": {
-          "type": "integer",
-          "minimum": 1
-        }
-      },
-      "required": [
-        "operation_id",
-        "task_id",
-        "version"
-      ],
-      "additionalProperties": false
-    },
-    "summary": {
-      "type": "object",
-      "properties": {
-        "task_id": {
-          "$ref": "common.schema.json#/definitions/id"
-        },
-        "version": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "state": {
-          "type": "string",
-          "enum": [
-            "draft",
-            "waiting_for_capability",
-            "checking_input",
-            "analyzing",
-            "researching",
-            "rendering",
-            "complete",
-            "partial",
-            "reshoot_required",
-            "unsupported",
-            "safety_stop",
-            "failed",
-            "cancelled",
-            "deleted"
-          ]
-        },
-        "stage": {
-          "type": "string",
-          "enum": [
-            "input",
-            "media",
-            "analysis",
-            "research",
-            "render",
-            "export",
-            "delete",
-            "none"
-          ]
-        },
-        "checkpoints": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "enum": [
-              "checking_input",
-              "analyzing",
-              "researching",
-              "rendering"
-            ]
-          },
-          "maxItems": 200,
-          "uniqueItems": true
-        },
-        "retained": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 2048
-          },
-          "maxItems": 200
-        },
-        "recovery_actions": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "enum": [
-              "retry",
-              "reshoot",
-              "repair",
-              "cancel",
-              "delete",
-              "ask",
-              "none"
-            ]
-          },
-          "maxItems": 200
-        },
-        "workspace_ref": {
-          "$ref": "common.schema.json#/definitions/relative_path"
-        },
-        "simulation": {
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "task_id",
-        "version",
-        "state",
-        "stage",
-        "checkpoints",
-        "retained",
-        "recovery_actions",
-        "workspace_ref",
-        "simulation"
-      ],
-      "additionalProperties": false
-    },
-    "states": {
+    "auxiliary_routes": {
+     "type": "array",
+     "items": {
       "type": "string",
       "enum": [
-        "draft",
-        "waiting_for_capability",
-        "checking_input",
-        "analyzing",
-        "researching",
-        "rendering",
-        "complete",
-        "partial",
-        "reshoot_required",
-        "unsupported",
-        "safety_stop",
-        "failed",
-        "cancelled",
-        "deleted"
+       "question_answer",
+       "tactics",
+       "technical_diagnosis",
+       "style_optimization"
       ]
+     },
+     "maxItems": 2,
+     "uniqueItems": true
+    },
+    "subject_id": {
+     "anyOf": [
+      {
+       "$ref": "common.schema.json#/definitions/id"
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "mirror_confirmed": {
+     "type": "boolean"
+    },
+    "analysis_mode": {
+     "type": "string",
+     "enum": [
+      "fixture",
+      "real_video"
+     ],
+     "description": "分析来源：fixture=固定样本（默认，需 fixture_id）；real_video=获准真实视频（按 media_ref 分析）"
+    },
+    "retain_mode": {
+     "type": "string",
+     "enum": [
+      "route_trimmed",
+      "full"
+     ],
+     "default": "route_trimmed",
+     "description": "证据帧保留方式。route_trimmed 按路由仅保留所需区间；full 保留完整分析区间。调用方选择 full 前必须先调用 analysis.estimate_storage，并取得用户对预计空间和全量保留的明确确认。"
+    },
+    "detector": {
+     "type": "string",
+     "enum": [
+      "coco",
+      "wasb"
+     ],
+     "description": "球检测器：coco 用于近景球/球拍检测，wasb 用于远景或中景球轨迹。未提供时由后端按受限流程询问或兜底，并明确标注来源。"
     }
+   },
+   "required": [
+    "operation_id",
+    "media_ref",
+    "user",
+    "consent",
+    "primary_route",
+    "auxiliary_routes",
+    "subject_id",
+    "mirror_confirmed"
+   ],
+   "additionalProperties": false,
+   "allOf": [
+    {
+     "if": {
+      "properties": {
+       "analysis_mode": {
+        "const": "real_video"
+       }
+      },
+      "required": [
+       "analysis_mode"
+      ]
+     },
+     "else": {
+      "required": [
+       "fixture_id"
+      ]
+     }
+    }
+   ]
+  },
+  "lookup": {
+   "type": "object",
+   "properties": {
+    "task_id": {
+     "$ref": "common.schema.json#/definitions/id"
+    },
+    "version": {
+     "type": "integer",
+     "minimum": 1
+    }
+   },
+   "required": [
+    "task_id",
+    "version"
+   ],
+   "additionalProperties": false
+  },
+  "cancel_input": {
+   "type": "object",
+   "properties": {
+    "operation_id": {
+     "$ref": "common.schema.json#/definitions/id"
+    },
+    "task_id": {
+     "$ref": "common.schema.json#/definitions/id"
+    },
+    "version": {
+     "type": "integer",
+     "minimum": 1
+    }
+   },
+   "required": [
+    "operation_id",
+    "task_id",
+    "version"
+   ],
+   "additionalProperties": false
+  },
+  "summary": {
+   "type": "object",
+   "properties": {
+    "task_id": {
+     "$ref": "common.schema.json#/definitions/id"
+    },
+    "version": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "state": {
+     "type": "string",
+     "enum": [
+      "draft",
+      "waiting_for_capability",
+      "checking_input",
+      "analyzing",
+      "researching",
+      "rendering",
+      "complete",
+      "partial",
+      "reshoot_required",
+      "unsupported",
+      "safety_stop",
+      "failed",
+      "cancelled",
+      "deleted"
+     ]
+    },
+    "stage": {
+     "type": "string",
+     "enum": [
+      "input",
+      "media",
+      "analysis",
+      "research",
+      "render",
+      "export",
+      "delete",
+      "none"
+     ]
+    },
+    "checkpoints": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "enum": [
+       "checking_input",
+       "analyzing",
+       "researching",
+       "rendering"
+      ]
+     },
+     "maxItems": 200,
+     "uniqueItems": true
+    },
+    "retained": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+     },
+     "maxItems": 200
+    },
+    "recovery_actions": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "enum": [
+       "retry",
+       "reshoot",
+       "repair",
+       "cancel",
+       "delete",
+       "ask",
+       "none"
+      ]
+     },
+     "maxItems": 200
+    },
+    "workspace_ref": {
+     "$ref": "common.schema.json#/definitions/relative_path"
+    },
+    "simulation": {
+     "type": "boolean"
+    },
+    "notes": {
+     "type": "array",
+     "items": {"type": "string", "minLength": 1, "maxLength": 2048},
+     "maxItems": 200
+    }
+   },
+   "required": [
+    "task_id",
+    "version",
+    "state",
+    "stage",
+    "checkpoints",
+    "retained",
+    "recovery_actions",
+    "workspace_ref",
+    "simulation"
+   ],
+   "additionalProperties": false
+  },
+  "states": {
+   "type": "string",
+   "enum": [
+    "draft",
+    "waiting_for_capability",
+    "checking_input",
+    "analyzing",
+    "researching",
+    "rendering",
+    "complete",
+    "partial",
+    "reshoot_required",
+    "unsupported",
+    "safety_stop",
+    "failed",
+    "cancelled",
+    "deleted"
+   ]
   }
+ }
 }
