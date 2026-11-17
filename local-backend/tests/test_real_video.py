@@ -37,7 +37,7 @@ def test_detector_logs_do_not_pollute_protocol_stdout(monkeypatch: Any, capsys: 
     logger.addHandler(logging.StreamHandler(sys.stdout))
     logger.setLevel(logging.INFO)
 
-    def model() -> Any:
+    def model(**_kwargs: Any) -> Any:
         logger.info("test weights loaded")
         return SimpleNamespace(predict=lambda *_a, **_k: SimpleNamespace(xyxy=[], data={}))
 

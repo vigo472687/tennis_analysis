@@ -1,0 +1,78 @@
+{
+  "version": "1.0.0",
+  "config_version": "fixture-config-1",
+  "simulation": true,
+  "reference_environment": "FFmpeg 9.0.2; reference hashes are observations of synthetic files, not camera/model performance",
+  "media_roles": [
+    "input_copy",
+    "evidence_frame",
+    "evidence_clip",
+    "trajectory",
+    "target_pose"
+  ],
+  "target_is_evidence": false,
+  "public_outputs_owned_by_task": true,
+  "reference_files": [
+    {
+      "fixture_id": "iphone-flat",
+      "media": {
+        "path": "iphone-flat.mp4",
+        "sha256": "a69742ab4cd03cdf27d17ff5abb16293410d8eefda4b8d3576378c561147c32b",
+        "size_bytes": 6258
+      },
+      "frame": {
+        "path": "iphone-flat.png",
+        "sha256": "c8150a8e037c909625addb721df7c1c8e30d622c6c2fe71a88a1ee28a064401c",
+        "size_bytes": 4589
+      }
+    },
+    {
+      "fixture_id": "android-flat",
+      "media": {
+        "path": "android-flat.mp4",
+        "sha256": "a69742ab4cd03cdf27d17ff5abb16293410d8eefda4b8d3576378c561147c32b",
+        "size_bytes": 6258
+      },
+      "frame": {
+        "path": "android-flat.png",
+        "sha256": "c8150a8e037c909625addb721df7c1c8e30d622c6c2fe71a88a1ee28a064401c",
+        "size_bytes": 4589
+      }
+    },
+    {
+      "fixture_id": "gopro-flat",
+      "media": {
+        "path": "gopro-flat.mp4",
+        "sha256": "a69742ab4cd03cdf27d17ff5abb16293410d8eefda4b8d3576378c561147c32b",
+        "size_bytes": 6258
+      },
+      "frame": {
+        "path": "gopro-flat.png",
+        "sha256": "c8150a8e037c909625addb721df7c1c8e30d622c6c2fe71a88a1ee28a064401c",
+        "size_bytes": 4589
+      }
+    },
+    {
+      "fixture_id": "insta360-flat",
+      "media": {
+        "path": "insta360-flat.mp4",
+        "sha256": "a69742ab4cd03cdf27d17ff5abb16293410d8eefda4b8d3576378c561147c32b",
+        "size_bytes": 6258
+      },
+      "frame": {
+        "path": "insta360-flat.png",
+        "sha256": "c8150a8e037c909625addb721df7c1c8e30d622c6c2fe71a88a1ee28a064401c",
+        "size_bytes": 4589
+      }
+    },
+    {
+      "fixture_id": "damaged",
+      "media": {
+        "path": "damaged.mp4",
+        "sha256": "49821052ee28afd49065147e8031f0a80724f40d1e3278d2d3a54392d87ee625",
+        "size_bytes": 40
+      },
+      "frame": null
+    }
+  ]
+}

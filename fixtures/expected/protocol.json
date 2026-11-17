@@ -1,0 +1,166 @@
+{
+ "version": "1.1.0",
+ "cases": [
+  {
+   "name": "success",
+   "method": "analysis.status",
+   "params": {
+    "task_id": "task-demo",
+    "version": 1
+   },
+   "response": {
+    "contract_version": "1.1.0",
+    "request_id": "req-success",
+    "ok": true,
+    "result": {
+     "task_id": "task-demo",
+     "version": 1,
+     "state": "complete",
+     "stage": "none",
+     "checkpoints": [
+      "checking_input",
+      "analyzing"
+     ],
+     "retained": [
+      "media",
+      "evidence"
+     ],
+     "recovery_actions": [
+      "none"
+     ],
+     "workspace_ref": "projects/task-demo/v1",
+     "simulation": true
+    },
+    "error": null,
+    "simulation": true
+   }
+  },
+  {
+   "name": "partial",
+   "method": "analysis.status",
+   "params": {
+    "task_id": "task-demo",
+    "version": 1
+   },
+   "response": {
+    "contract_version": "1.1.0",
+    "request_id": "req-partial",
+    "ok": true,
+    "result": {
+     "task_id": "task-demo",
+     "version": 1,
+     "state": "partial",
+     "stage": "none",
+     "checkpoints": [
+      "checking_input",
+      "analyzing"
+     ],
+     "retained": [
+      "media",
+      "evidence"
+     ],
+     "recovery_actions": [
+      "reshoot"
+     ],
+     "workspace_ref": "projects/task-demo/v1",
+     "simulation": true
+    },
+    "error": null,
+    "simulation": true
+   }
+  },
+  {
+   "name": "cancelled",
+   "method": "analysis.cancel",
+   "params": {
+    "operation_id": "op-cancel",
+    "task_id": "task-demo",
+    "version": 1
+   },
+   "response": {
+    "contract_version": "1.1.0",
+    "request_id": "req-cancel",
+    "ok": true,
+    "result": {
+     "task_id": "task-demo",
+     "version": 1,
+     "state": "cancelled",
+     "stage": "none",
+     "checkpoints": [
+      "checking_input",
+      "analyzing"
+     ],
+     "retained": [
+      "media",
+      "evidence"
+     ],
+     "recovery_actions": [
+      "none"
+     ],
+     "workspace_ref": "projects/task-demo/v1",
+     "simulation": true
+    },
+    "error": null,
+    "simulation": true
+   }
+  },
+  {
+   "name": "failed",
+   "method": "analysis.status",
+   "params": {
+    "task_id": "task-demo",
+    "version": 1
+   },
+   "response": {
+    "contract_version": "1.1.0",
+    "request_id": "req-fail",
+    "ok": false,
+    "result": null,
+    "error": {
+     "code": "ANALYSIS_FAILED",
+     "stage": "analysis",
+     "retryable": true,
+     "user_action": "retry",
+     "retained": [
+      "media"
+     ],
+     "details_ref": null,
+     "simulation": true
+    },
+    "simulation": true
+   }
+  },
+  {
+   "name": "deleted",
+   "method": "analysis.delete",
+   "params": {
+    "operation_id": "op-delete",
+    "task_id": "task-demo",
+    "version": 1,
+    "scope": "task",
+    "confirmed": true
+   },
+   "response": {
+    "contract_version": "1.1.0",
+    "request_id": "req-delete",
+    "ok": true,
+    "result": {
+     "operation_id": "op-delete",
+     "items": [
+      {
+       "resource_id": "media-demo",
+       "status": "deleted",
+       "code": null
+      }
+     ],
+     "complete": true,
+     "external_copies_uncontrolled": true,
+     "runtime_uninstalled": false,
+     "simulation": true
+    },
+    "error": null,
+    "simulation": true
+   }
+  }
+ ]
+}

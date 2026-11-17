@@ -1,0 +1,385 @@
+{
+  "version": "1.0.0",
+  "cases": [
+    {
+      "fixture_id": "iphone-flat",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "iphone-flat-export",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "android-flat",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "android-flat-export",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "gopro-flat",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "gopro-flat-export",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "insta360-flat",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "insta360-flat-export",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "single-backhand",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "forehand-volley",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "backhand-volley",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "overlong",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 181,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "flat",
+        "support": "unsupported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": true
+    },
+    {
+      "fixture_id": "damaged",
+      "media": {
+        "container": "unknown",
+        "codec": "unknown",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "flat",
+        "support": "unsupported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": true
+    },
+    {
+      "fixture_id": "native-panorama",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "native",
+        "support": "unsupported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": true
+    },
+    {
+      "fixture_id": "missing-feet",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "missing-ball",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "missing-racket",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "occluded",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "small-person",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "missing-body",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "multiple-subjects",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "mirror-conflict",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "unknown-action",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    },
+    {
+      "fixture_id": "bad-time-mapping",
+      "media": {
+        "container": "mp4",
+        "codec": "h264",
+        "duration_s": 3,
+        "fps": 30,
+        "width": 640,
+        "height": 360,
+        "rotation": "0",
+        "slow_motion": "unknown",
+        "hdr": "unknown",
+        "device_source": "synthetic",
+        "panorama": "flat",
+        "support": "supported",
+        "observation_kind": "simulated"
+      },
+      "blocked_before_analysis": false
+    }
+  ]
+}

@@ -1,0 +1,637 @@
+{
+  "version": "1.0.0",
+  "config_version": "fixture-config-1",
+  "simulation": true,
+  "license_note": "Project-generated fixtures for local prototype tests; no personal videos or implied device compatibility",
+  "samples": [
+    {
+      "fixture_id": "iphone-flat",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "iphone-flat-export",
+      "media_ref": "media/iphone-flat.mp4",
+      "duration_s": 3,
+      "stroke_kind": "forehand",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "complete",
+      "expected_quality": "pass",
+      "issue_codes": [],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-010",
+        "AC-SPEC-047",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "android-flat",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "android-flat-export",
+      "media_ref": "media/android-flat.mp4",
+      "duration_s": 3,
+      "stroke_kind": "double_backhand",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "complete",
+      "expected_quality": "pass",
+      "issue_codes": [],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-010",
+        "AC-SPEC-047",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "gopro-flat",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "gopro-flat-export",
+      "media_ref": "media/gopro-flat.mp4",
+      "duration_s": 3,
+      "stroke_kind": "serve",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "complete",
+      "expected_quality": "pass",
+      "issue_codes": [],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-010",
+        "AC-SPEC-047",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "insta360-flat",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "insta360-flat-export",
+      "media_ref": "media/insta360-flat.mp4",
+      "duration_s": 3,
+      "stroke_kind": "footwork",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "complete",
+      "expected_quality": "pass",
+      "issue_codes": [],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-010",
+        "AC-SPEC-047",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "single-backhand",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/single-backhand.mp4",
+      "duration_s": 3,
+      "stroke_kind": "single_backhand",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "complete",
+      "expected_quality": "pass",
+      "issue_codes": [],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-010",
+        "AC-SPEC-047",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "forehand-volley",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/forehand-volley.mp4",
+      "duration_s": 3,
+      "stroke_kind": "forehand_volley",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "complete",
+      "expected_quality": "pass",
+      "issue_codes": [],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-010",
+        "AC-SPEC-047",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "backhand-volley",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/backhand-volley.mp4",
+      "duration_s": 3,
+      "stroke_kind": "backhand_volley",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "complete",
+      "expected_quality": "pass",
+      "issue_codes": [],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-010",
+        "AC-SPEC-047",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "overlong",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/overlong.mp4",
+      "duration_s": 181,
+      "stroke_kind": "forehand",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "unsupported",
+      "expected_quality": "fail",
+      "issue_codes": [
+        "duration_exceeded"
+      ],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-010",
+        "AC-SPEC-047",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "damaged",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/damaged.mp4",
+      "duration_s": 3,
+      "stroke_kind": "unable",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "unsupported",
+      "expected_quality": "fail",
+      "issue_codes": [
+        "unreadable_media"
+      ],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-010",
+        "AC-SPEC-047",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "native-panorama",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/native-panorama.mp4",
+      "duration_s": 3,
+      "stroke_kind": "forehand",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "unsupported",
+      "expected_quality": "fail",
+      "issue_codes": [
+        "panorama_requires_flat_export"
+      ],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-010",
+        "AC-SPEC-047",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "missing-feet",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/missing-feet.mp4",
+      "duration_s": 3,
+      "stroke_kind": "footwork",
+      "visible_objects": [
+        "body",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "partial",
+      "expected_quality": "limited",
+      "issue_codes": [
+        "missing_feet"
+      ],
+      "missing_objects": [
+        "feet"
+      ],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-011",
+        "AC-SPEC-013",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "missing-ball",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/missing-ball.mp4",
+      "duration_s": 3,
+      "stroke_kind": "forehand",
+      "visible_objects": [
+        "body",
+        "feet",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "partial",
+      "expected_quality": "limited",
+      "issue_codes": [
+        "missing_ball"
+      ],
+      "missing_objects": [
+        "ball"
+      ],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-011",
+        "AC-SPEC-014",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "missing-racket",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/missing-racket.mp4",
+      "duration_s": 3,
+      "stroke_kind": "forehand",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "partial",
+      "expected_quality": "limited",
+      "issue_codes": [
+        "missing_racket"
+      ],
+      "missing_objects": [
+        "racket"
+      ],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-011",
+        "AC-SPEC-015",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "occluded",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/occluded.mp4",
+      "duration_s": 3,
+      "stroke_kind": "forehand",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "partial",
+      "expected_quality": "limited",
+      "issue_codes": [
+        "occlusion"
+      ],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-011",
+        "AC-SPEC-019",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "small-person",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/small-person.mp4",
+      "duration_s": 3,
+      "stroke_kind": "forehand",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "reshoot_required",
+      "expected_quality": "fail",
+      "issue_codes": [
+        "subject_too_small"
+      ],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-010",
+        "AC-SPEC-047",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "missing-body",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/missing-body.mp4",
+      "duration_s": 3,
+      "stroke_kind": "forehand",
+      "visible_objects": [
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "reshoot_required",
+      "expected_quality": "fail",
+      "issue_codes": [
+        "body_out_of_frame"
+      ],
+      "missing_objects": [
+        "body",
+        "feet"
+      ],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-010",
+        "AC-SPEC-047",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "multiple-subjects",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/multiple-subjects.mp4",
+      "duration_s": 3,
+      "stroke_kind": "forehand",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1",
+        "person-2"
+      ],
+      "requires_subject_selection": true,
+      "mirror_conflict": false,
+      "expected_state": "partial",
+      "expected_quality": "limited",
+      "issue_codes": [
+        "subject_selection_required"
+      ],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-046",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "mirror-conflict",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/mirror-conflict.mp4",
+      "duration_s": 3,
+      "stroke_kind": "forehand",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": true,
+      "expected_state": "partial",
+      "expected_quality": "limited",
+      "issue_codes": [
+        "direction_confirmation_required"
+      ],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-010",
+        "AC-SPEC-047",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "unknown-action",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/unknown-action.mp4",
+      "duration_s": 3,
+      "stroke_kind": "unable",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "unsupported",
+      "expected_quality": "fail",
+      "issue_codes": [
+        "unsupported_stroke"
+      ],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-010",
+        "AC-SPEC-047",
+        "AC-SPEC-052"
+      ]
+    },
+    {
+      "fixture_id": "bad-time-mapping",
+      "source_kind": "synthetic",
+      "source_note": "Generated local test scenario; not a real device capture or measured tennis motion",
+      "device_scenario": "synthetic",
+      "media_ref": "media/bad-time-mapping.mp4",
+      "duration_s": 3,
+      "stroke_kind": "forehand",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "subject_candidates": [
+        "person-1"
+      ],
+      "requires_subject_selection": false,
+      "mirror_conflict": false,
+      "expected_state": "reshoot_required",
+      "expected_quality": "fail",
+      "issue_codes": [
+        "time_mapping_invalid"
+      ],
+      "missing_objects": [],
+      "config_version": "fixture-config-1",
+      "cover_ac": [
+        "AC-SPEC-012",
+        "AC-SPEC-052"
+      ]
+    }
+  ]
+}

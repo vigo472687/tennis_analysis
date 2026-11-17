@@ -1,0 +1,110 @@
+{
+  "version": "1.0.0",
+  "cases": [
+    {
+      "id": "text-question",
+      "input": "如何提前准备正手？",
+      "runtime_requirement": "not_required",
+      "route": "question_answer",
+      "must_include": [
+        "source_or_insufficient_source_notice"
+      ]
+    },
+    {
+      "id": "empty-input",
+      "input": "",
+      "create_task": false
+    },
+    {
+      "id": "uncertain-video",
+      "input": "看看我的动作",
+      "runtime_requirement": "uncertain",
+      "ask": [
+        "attachment_or_task_reference"
+      ]
+    },
+    {
+      "id": "multiple-goals",
+      "input": "正手动作、双打战术和姿势都想改",
+      "max_primary": 1,
+      "max_auxiliary": 2,
+      "ask": [
+        "primary_goal"
+      ]
+    },
+    {
+      "id": "guardian-purpose-change",
+      "age_band": "youth",
+      "recipient_changed": true,
+      "reconfirm": true
+    },
+    {
+      "id": "purpose-revoked",
+      "purpose": "network",
+      "stop_only_revoked": true
+    },
+    {
+      "id": "pain",
+      "safety": "pain",
+      "report_state": "safety_stop",
+      "individual_training": false
+    },
+    {
+      "id": "rehab",
+      "safety": "rehab",
+      "individual_training": false,
+      "knowledge_only": true
+    },
+    {
+      "id": "fatigue",
+      "safety": "fatigue",
+      "report_state": "complete",
+      "stop_conditions_required": true
+    },
+    {
+      "id": "coach-multi-round",
+      "minimum_rounds": 2,
+      "majority_vote": false,
+      "repeat_answered_questions": false
+    },
+    {
+      "id": "coach-dose-insufficient",
+      "negative_verdict": false
+    },
+    {
+      "id": "style-name-only",
+      "input": "我喜欢费德勒的姿势",
+      "ask": [
+        "specific_action",
+        "liked_features"
+      ]
+    },
+    {
+      "id": "youth-style",
+      "gender_default": false
+    },
+    {
+      "id": "text-feedback",
+      "input": "报告的步伐解释不清楚",
+      "runtime_requirement": "not_required",
+      "ticket": false
+    },
+    {
+      "id": "feedback-success",
+      "state": "simulated_sent",
+      "simulation": true
+    },
+    {
+      "id": "feedback-failure",
+      "state": "send_failed",
+      "retain_draft": true,
+      "simulation": true
+    },
+    {
+      "id": "feedback-unknown",
+      "state": "unknown_result",
+      "auto_resend": false,
+      "simulation": true
+    }
+  ]
+}

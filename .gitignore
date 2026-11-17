@@ -9,8 +9,11 @@
 /004 后端测试/
 /005 后端重构/
 /006 调试工作台联调/
-/fixtures/
-/integration/
+# Needed by a fresh clone to start and to pass check.sh: fixtures/ and the contract hash baseline are tracked.
+/integration/*
+!/integration/reports/
+/integration/reports/*
+!/integration/reports/contract-baseline.json
 /design-system/
 /AGENTS.md
 /.claude/
@@ -32,6 +35,5 @@ node_modules/
 local-backend/tests/.artifacts/
 local-backend/tests/*.debug
 local-backend/HANDOFF_RESULT.md
-local-backend/CLAUDE.md
 workbuddy-plugin/bin/
 workbuddy-plugin/fixtures/

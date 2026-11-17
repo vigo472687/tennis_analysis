@@ -1,0 +1,60 @@
+{
+  "version": "1.0.0",
+  "cases": [
+    {
+      "state": "complete",
+      "complete_copy_allowed": true,
+      "training_allowed": true,
+      "must_show_limitations": false,
+      "simulation": true
+    },
+    {
+      "state": "partial",
+      "complete_copy_allowed": false,
+      "training_allowed": true,
+      "must_show_limitations": true,
+      "simulation": true
+    },
+    {
+      "state": "reshoot_required",
+      "complete_copy_allowed": false,
+      "training_allowed": false,
+      "must_show_limitations": true,
+      "simulation": true
+    },
+    {
+      "state": "unsupported",
+      "complete_copy_allowed": false,
+      "training_allowed": false,
+      "must_show_limitations": true,
+      "simulation": true
+    },
+    {
+      "state": "safety_stop",
+      "complete_copy_allowed": false,
+      "training_allowed": false,
+      "must_show_limitations": true,
+      "simulation": true
+    },
+    {
+      "state": "failed",
+      "complete_copy_allowed": false,
+      "training_allowed": false,
+      "must_show_limitations": true,
+      "simulation": true
+    },
+    {
+      "state": "cancelled",
+      "complete_copy_allowed": false,
+      "training_allowed": false,
+      "must_show_limitations": true,
+      "simulation": true
+    }
+  ],
+  "invalid_resource": {
+    "state": "partial",
+    "hide_missing_module": true,
+    "reanalyse": false
+  },
+  "real_person_image_enabled": false
+}

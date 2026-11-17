@@ -61,6 +61,7 @@ ProbeRunner = Callable[[Sequence[str]], subprocess.CompletedProcess[str]]
 CHECK_PACKAGE_VERSION = "package_version_present"
 CHECK_CONTRACT_VERSION = "contract_version_1_0_0"
 CHECK_PYTHON_VERSION = "python_version_3_11_plus"
+CHECK_WEIGHTS = "model_weights_ready"
 
 
 @dataclass(frozen=True)
@@ -74,6 +75,8 @@ class HealthConfig:
     minimum_free_bytes: int = _DEFAULT_MINIMUM_FREE_BYTES
     ffmpeg: str = "ffmpeg"
     ffprobe: str = "ffprobe"
+    #: Weight files to verify; empty disables the check (fixture-only runs).
+    weight_paths: tuple[Path, ...] = ()
 
 
 def _default_runner(argv: Sequence[str]) -> subprocess.CompletedProcess[str]:
@@ -103,6 +106,37 @@ def _probe_tool(
     if match is None:
         return True, False
     return True, (int(match.group(1)), int(match.group(2))) >= minimum
+
+
+def _weight_checks(paths: tuple[Path, ...]) -> list[tuple[str, bool]]:
+    """Every weight present and not an unpulled Git LFS pointer.
+
+    A pointer file is ~130 bytes of text where the weights should be: it exists,
+    so a bare ``is_file`` would pass it, and the failure would only surface
+    later inside the model loader. One check for the whole set keeps the
+    frozen check list short; the missing item is reported separately.
+    """
+    if not paths:
+        return []
+    return [(CHECK_WEIGHTS, all(_usable_weight(path) for path in paths))]
+
+
+_LFS_POINTER = b"version https://git-lfs.github.com/spec/v1"
+
+
+def _usable_weight(path: Path) -> bool:
+    if not path.is_file():
+        return False
+    try:
+        with path.open("rb") as handle:
+            return handle.read(len(_LFS_POINTER)) != _LFS_POINTER
+    except OSError:
+        return False
+
+
+def missing_weights(paths: tuple[Path, ...]) -> list[str]:
+    """File names that are absent or still an LFS pointer (empty when ready)."""
+    return [path.name for path in paths if not _usable_weight(path)]
 
 
 def _root_checks(config: HealthConfig, label: str, root: Path) -> list[tuple[str, bool]]:
@@ -149,6 +183,7 @@ def runtime_health(config: HealthConfig, *, runner: ProbeRunner | None = None) -
         ("ffmpeg_version_supported", ffmpeg_version),
         ("ffprobe_available", ffprobe_available),
         ("ffprobe_version_supported", ffprobe_version),
+        *_weight_checks(config.weight_paths),
     ]
     checks = [RuntimeCheck(code=code, passed=passed) for code, passed in outcomes]
     state: RuntimeState = "ready" if all(passed for _, passed in outcomes) else "repair_required"

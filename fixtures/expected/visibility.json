@@ -1,0 +1,352 @@
+{
+  "version": "1.0.0",
+  "cases": [
+    {
+      "fixture_id": "iphone-flat",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [],
+      "issue_codes": [],
+      "quality": "pass",
+      "report_state": "complete",
+      "reshoot_guidance": "No additional footage required for this synthetic scenario."
+    },
+    {
+      "fixture_id": "android-flat",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [],
+      "issue_codes": [],
+      "quality": "pass",
+      "report_state": "complete",
+      "reshoot_guidance": "No additional footage required for this synthetic scenario."
+    },
+    {
+      "fixture_id": "gopro-flat",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [],
+      "issue_codes": [],
+      "quality": "pass",
+      "report_state": "complete",
+      "reshoot_guidance": "No additional footage required for this synthetic scenario."
+    },
+    {
+      "fixture_id": "insta360-flat",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [],
+      "issue_codes": [],
+      "quality": "pass",
+      "report_state": "complete",
+      "reshoot_guidance": "No additional footage required for this synthetic scenario."
+    },
+    {
+      "fixture_id": "single-backhand",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [],
+      "issue_codes": [],
+      "quality": "pass",
+      "report_state": "complete",
+      "reshoot_guidance": "No additional footage required for this synthetic scenario."
+    },
+    {
+      "fixture_id": "forehand-volley",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [],
+      "issue_codes": [],
+      "quality": "pass",
+      "report_state": "complete",
+      "reshoot_guidance": "No additional footage required for this synthetic scenario."
+    },
+    {
+      "fixture_id": "backhand-volley",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [],
+      "issue_codes": [],
+      "quality": "pass",
+      "report_state": "complete",
+      "reshoot_guidance": "No additional footage required for this synthetic scenario."
+    },
+    {
+      "fixture_id": "overlong",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [],
+      "issue_codes": [
+        "duration_exceeded"
+      ],
+      "quality": "fail",
+      "report_state": "unsupported",
+      "reshoot_guidance": "Keep the full body, both feet, racket and incoming ball visible; confirm subject/direction or export a flat focused clip."
+    },
+    {
+      "fixture_id": "damaged",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [],
+      "issue_codes": [
+        "unreadable_media"
+      ],
+      "quality": "fail",
+      "report_state": "unsupported",
+      "reshoot_guidance": "Keep the full body, both feet, racket and incoming ball visible; confirm subject/direction or export a flat focused clip."
+    },
+    {
+      "fixture_id": "native-panorama",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [],
+      "issue_codes": [
+        "panorama_requires_flat_export"
+      ],
+      "quality": "fail",
+      "report_state": "unsupported",
+      "reshoot_guidance": "Keep the full body, both feet, racket and incoming ball visible; confirm subject/direction or export a flat focused clip."
+    },
+    {
+      "fixture_id": "missing-feet",
+      "visible_objects": [
+        "body",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [
+        "feet"
+      ],
+      "excluded_observations": [
+        "footwork",
+        "support",
+        "leg_drive_rotation"
+      ],
+      "issue_codes": [
+        "missing_feet"
+      ],
+      "quality": "limited",
+      "report_state": "partial",
+      "reshoot_guidance": "Keep the full body, both feet, racket and incoming ball visible; confirm subject/direction or export a flat focused clip."
+    },
+    {
+      "fixture_id": "missing-ball",
+      "visible_objects": [
+        "body",
+        "feet",
+        "racket"
+      ],
+      "unavailable_objects": [
+        "ball"
+      ],
+      "excluded_observations": [
+        "bounce_candidate",
+        "incoming_timing",
+        "precise_contact"
+      ],
+      "issue_codes": [
+        "missing_ball"
+      ],
+      "quality": "limited",
+      "report_state": "partial",
+      "reshoot_guidance": "Keep the full body, both feet, racket and incoming ball visible; confirm subject/direction or export a flat focused clip."
+    },
+    {
+      "fixture_id": "missing-racket",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball"
+      ],
+      "unavailable_objects": [
+        "racket"
+      ],
+      "excluded_observations": [
+        "racket_trajectory",
+        "racket_drop"
+      ],
+      "issue_codes": [
+        "missing_racket"
+      ],
+      "quality": "limited",
+      "report_state": "partial",
+      "reshoot_guidance": "Keep the full body, both feet, racket and incoming ball visible; confirm subject/direction or export a flat focused clip."
+    },
+    {
+      "fixture_id": "occluded",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [],
+      "issue_codes": [
+        "occlusion"
+      ],
+      "quality": "limited",
+      "report_state": "partial",
+      "reshoot_guidance": "Keep the full body, both feet, racket and incoming ball visible; confirm subject/direction or export a flat focused clip."
+    },
+    {
+      "fixture_id": "small-person",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [],
+      "issue_codes": [
+        "subject_too_small"
+      ],
+      "quality": "fail",
+      "report_state": "reshoot_required",
+      "reshoot_guidance": "Keep the full body, both feet, racket and incoming ball visible; confirm subject/direction or export a flat focused clip."
+    },
+    {
+      "fixture_id": "missing-body",
+      "visible_objects": [
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [
+        "body",
+        "feet"
+      ],
+      "excluded_observations": [
+        "footwork",
+        "support",
+        "leg_drive_rotation"
+      ],
+      "issue_codes": [
+        "body_out_of_frame"
+      ],
+      "quality": "fail",
+      "report_state": "reshoot_required",
+      "reshoot_guidance": "Keep the full body, both feet, racket and incoming ball visible; confirm subject/direction or export a flat focused clip."
+    },
+    {
+      "fixture_id": "multiple-subjects",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [],
+      "issue_codes": [
+        "subject_selection_required"
+      ],
+      "quality": "limited",
+      "report_state": "partial",
+      "reshoot_guidance": "Keep the full body, both feet, racket and incoming ball visible; confirm subject/direction or export a flat focused clip."
+    },
+    {
+      "fixture_id": "mirror-conflict",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [],
+      "issue_codes": [
+        "direction_confirmation_required"
+      ],
+      "quality": "limited",
+      "report_state": "partial",
+      "reshoot_guidance": "Keep the full body, both feet, racket and incoming ball visible; confirm subject/direction or export a flat focused clip."
+    },
+    {
+      "fixture_id": "unknown-action",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [],
+      "issue_codes": [
+        "unsupported_stroke"
+      ],
+      "quality": "fail",
+      "report_state": "unsupported",
+      "reshoot_guidance": "Keep the full body, both feet, racket and incoming ball visible; confirm subject/direction or export a flat focused clip."
+    },
+    {
+      "fixture_id": "bad-time-mapping",
+      "visible_objects": [
+        "body",
+        "feet",
+        "ball",
+        "racket"
+      ],
+      "unavailable_objects": [],
+      "excluded_observations": [
+        "all_formal_claims"
+      ],
+      "issue_codes": [
+        "time_mapping_invalid"
+      ],
+      "quality": "fail",
+      "report_state": "reshoot_required",
+      "reshoot_guidance": "Keep the full body, both feet, racket and incoming ball visible; confirm subject/direction or export a flat focused clip."
+    }
+  ]
+}

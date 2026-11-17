@@ -31,9 +31,11 @@ import cv2
 import numpy as np
 
 from tennis_backend.domain.models import DomainViolation
+from tennis_backend.media.weights import DETECTOR_ENV, detector_weights, require
 
 _VIDEO_MISSING = "SUBJECT_VIDEO_MISSING"
 _DEPS_MISSING = "REAL_POSE_DEPS_MISSING"
+_DEPS_WEIGHTS = "SUBJECT_WEIGHTS_MISSING"
 _EMPTY_ANNOTATED = "SUBJECT_EMPTY_RENDER"
 
 #: Seconds of analysed footage in Phase 2; longer clips are capped honestly.
@@ -74,7 +76,16 @@ class RFDetrPersonDetector:
                 logger.removeHandler(handler)
             logger.addHandler(logging.StreamHandler(sys.stderr))
             logger.propagate = False
-            self._model = rfdetr.RFDETRNano()
+            self._model = rfdetr.RFDETRNano(
+                pretrain_weights=str(
+                    require(
+                        detector_weights(),
+                        code=_DEPS_WEIGHTS,
+                        what="RF-DETR nano",
+                        env=DETECTOR_ENV,
+                    )
+                )
+            )
         result = self._model.predict(frame_rgb, threshold=self._threshold)
         names = result.data.get("class_name") if hasattr(result, "data") else None
         out: list[dict[str, Any]] = []

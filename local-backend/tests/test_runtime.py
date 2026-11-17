@@ -26,6 +26,7 @@ from tennis_backend.runtime.health import (
     CHECK_PYTHON_VERSION,
     HealthConfig,
     missing_checks,
+    missing_weights,
     runtime_health,
 )
 
@@ -366,3 +367,51 @@ def test_real_environment_smoke_is_read_only_and_valid(config: HealthConfig) -> 
     assert all(len(check.code) <= 128 for check in result.checks)
     again = runtime_health(config)
     assert again.model_dump() == result.model_dump()
+
+
+# ----------------------------------------------------------------------
+# model weights check (opt-in: weight_paths empty keeps the frozen 13 checks)
+# ----------------------------------------------------------------------
+
+
+def _ready_config(tmp_path: Path, weights: tuple[Path, ...]) -> HealthConfig:
+    public, internal = tmp_path / "public", tmp_path / "internal"
+    public.mkdir()
+    internal.mkdir()
+    return HealthConfig(
+        backend_version="0.1.0",
+        public_root=public,
+        internal_root=internal,
+        weight_paths=weights,
+    )
+
+
+_fake_tools = runner_with(FFMPEG_OK, FFPROBE_OK)
+
+
+def test_default_health_has_no_weight_check(tmp_path: Path) -> None:
+    result = runtime_health(_ready_config(tmp_path, ()), runner=_fake_tools)
+    assert all(check.code != "model_weights_ready" for check in result.checks)
+
+
+def test_a_present_weight_passes(tmp_path: Path) -> None:
+    weight = tmp_path / "w.pth"
+    weight.write_bytes(b"PK\x03\x04" + b"0" * 100)
+    result = runtime_health(_ready_config(tmp_path, (weight,)), runner=_fake_tools)
+    assert result.state == "ready"
+    assert any(c.code == "model_weights_ready" and c.passed for c in result.checks)
+
+
+def test_a_missing_weight_makes_the_runtime_repair_required(tmp_path: Path) -> None:
+    result = runtime_health(_ready_config(tmp_path, (tmp_path / "no.pth",)), runner=_fake_tools)
+    assert result.state == "repair_required"
+    assert any(c.code == "model_weights_ready" and not c.passed for c in result.checks)
+    assert missing_weights((tmp_path / "no.pth",)) == ["no.pth"]
+
+
+def test_an_lfs_pointer_is_not_a_usable_weight(tmp_path: Path) -> None:
+    pointer = tmp_path / "w.pth"
+    pointer.write_bytes(b"version https://git-lfs.github.com/spec/v1\noid sha256:x\nsize 1\n")
+    result = runtime_health(_ready_config(tmp_path, (pointer,)), runner=_fake_tools)
+    assert result.state == "repair_required"
+    assert missing_weights((pointer,)) == ["w.pth"]

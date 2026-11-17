@@ -8,6 +8,9 @@ dependencies = [
     "pydantic>=2.8,<3",
     "mediapipe==1.2.2",
     "opencv-contrib-python==5.0.0.93",
+    # imported at start-up by contracts/validation.py: a runtime dependency,
+    # not a development one (it was only listed under the dev group)
+    "jsonschema>=4.21",
 ]
 
 [project.scripts]
@@ -26,7 +29,6 @@ dev = [
     "pytest>=8.3",
     "ruff>=0.6",
     "mypy>=1.11",
-    "jsonschema>=4.21",
 ]
 
 [build-system]
@@ -38,6 +40,7 @@ packages = ["src/tennis_backend"]
 
 [tool.ruff]
 line-length = 100
+extend-exclude = ["src/tennis_backend/vendor"]
 target-version = "py311"
 src = ["src", "tests"]
 
@@ -52,8 +55,12 @@ explicit_package_bases = true
 warn_unreachable = true
 
 [[tool.mypy.overrides]]
-module = ["jsonschema.*", "cv2.*", "rtmlib.*"]
+module = ["jsonschema.*", "cv2.*", "rtmlib.*", "torch.*"]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["tennis_backend.vendor.*"]
+ignore_errors = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

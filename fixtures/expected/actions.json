@@ -1,0 +1,315 @@
+{
+  "version": "1.0.0",
+  "supported_strokes": [
+    "forehand",
+    "single_backhand",
+    "double_backhand",
+    "serve",
+    "forehand_volley",
+    "backhand_volley",
+    "footwork"
+  ],
+  "timing_order": [
+    "preparation",
+    "first_step",
+    "main_movement",
+    "moving_backswing",
+    "bounce_candidate",
+    "adjustment",
+    "support",
+    "racket_drop",
+    "leg_drive_rotation",
+    "forward_swing",
+    "recovery"
+  ],
+  "event_requires": {
+    "preparation": [
+      "body"
+    ],
+    "first_step": [
+      "feet"
+    ],
+    "main_movement": [
+      "feet"
+    ],
+    "moving_backswing": [
+      "body"
+    ],
+    "bounce_candidate": [
+      "ball"
+    ],
+    "adjustment": [
+      "feet"
+    ],
+    "support": [
+      "feet"
+    ],
+    "racket_drop": [
+      "racket"
+    ],
+    "leg_drive_rotation": [
+      "feet",
+      "body"
+    ],
+    "forward_swing": [
+      "body"
+    ],
+    "recovery": [
+      "feet"
+    ]
+  },
+  "relative_metric_definitions": [
+    {
+      "metric_id": "preparation-order",
+      "definition": "Preparation order relative to forward swing",
+      "unit": "event_order",
+      "reference": "forward_swing",
+      "limitations": [
+        "Synthetic fixed observation; no measured physical force or speed"
+      ]
+    },
+    {
+      "metric_id": "support-continuity",
+      "definition": "Visible support continuity within the movement",
+      "unit": "relative",
+      "reference": "body scale and action phase",
+      "limitations": [
+        "2D visibility proxy, not force or torque"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "fixture_id": "iphone-flat",
+      "kind": "forehand",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "android-flat",
+      "kind": "double_backhand",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "gopro-flat",
+      "kind": "serve",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "insta360-flat",
+      "kind": "footwork",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "single-backhand",
+      "kind": "single_backhand",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "forehand-volley",
+      "kind": "forehand_volley",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "backhand-volley",
+      "kind": "backhand_volley",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "overlong",
+      "kind": "forehand",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "damaged",
+      "kind": "unable",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [],
+      "confidence": "insufficient_evidence"
+    },
+    {
+      "fixture_id": "native-panorama",
+      "kind": "forehand",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "missing-feet",
+      "kind": "footwork",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "missing-ball",
+      "kind": "forehand",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "missing-racket",
+      "kind": "forehand",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "occluded",
+      "kind": "forehand",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "small-person",
+      "kind": "forehand",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "missing-body",
+      "kind": "forehand",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "multiple-subjects",
+      "kind": "forehand",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "mirror-conflict",
+      "kind": "forehand",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    },
+    {
+      "fixture_id": "unknown-action",
+      "kind": "unable",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [],
+      "confidence": "insufficient_evidence"
+    },
+    {
+      "fixture_id": "bad-time-mapping",
+      "kind": "forehand",
+      "start_s": 0.2,
+      "end_s": 2.8,
+      "phases": [
+        "preparation",
+        "forward_swing",
+        "recovery"
+      ],
+      "confidence": "medium"
+    }
+  ]
+}

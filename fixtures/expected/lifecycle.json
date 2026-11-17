@@ -1,0 +1,59 @@
+{
+  "version": "1.0.0",
+  "cases": [
+    {
+      "id": "cancel-every-stage",
+      "from": [
+        "waiting_for_capability",
+        "checking_input",
+        "analyzing",
+        "researching",
+        "rendering"
+      ],
+      "to": "cancelled",
+      "retains_completed_checkpoints": true
+    },
+    {
+      "id": "terminal-cancel",
+      "from": [
+        "complete",
+        "partial",
+        "unsupported",
+        "reshoot_required",
+        "safety_stop",
+        "failed",
+        "deleted",
+        "cancelled"
+      ],
+      "unchanged": true
+    },
+    {
+      "id": "duplicate-create",
+      "single_task": true
+    },
+    {
+      "id": "interrupted-stage",
+      "resume_last_complete": true
+    },
+    {
+      "id": "report-retry",
+      "reanalyse": false
+    },
+    {
+      "id": "delete-partial",
+      "per_item": true
+    },
+    {
+      "id": "reset-demo",
+      "uninstall_runtime": false
+    },
+    {
+      "id": "upgrade-failure",
+      "preserve_last_usable": true
+    },
+    {
+      "id": "uninstall-keep-data",
+      "delete_project": false
+    }
+  ]
+}
