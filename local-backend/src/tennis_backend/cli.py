@@ -667,6 +667,7 @@ class StdioHandler:
                         [
                             max((b["box"][3] - b["box"][1]) for b in record.boxes)
                             for record in subjects_outcome.records
+                            if record.boxes
                         ],
                         normalized.media.probe.height,
                     )

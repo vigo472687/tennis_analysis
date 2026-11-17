@@ -158,6 +158,38 @@ def test_create_without_detector_asks_and_does_not_guess(
     ).exists()
 
 
+def test_frames_without_a_detected_person_do_not_crash_the_detector_flow(
+    tmp_path: Path,
+) -> None:
+    """A frame where the person detector found nobody has no height to take.
+
+    The real-model smoke hit this: ``max()`` over an empty box list crashed
+    the create before the prompt could be issued.
+    """
+    from tennis_backend.cli import StdioHandler
+    from tennis_backend.contracts.validation import ContractRegistry
+    from test_subjects import FakeDetector
+
+    registry = ContractRegistry.load(REPO_ROOT / "contracts" / "v1")
+    detector = FakeDetector([[]])  # every frame: no person at all
+    for sub in ("ingest", "internal", "public"):
+        (tmp_path / "data" / sub).mkdir(parents=True, exist_ok=True)
+    ingest = tmp_path / "data" / "ingest" / "tennis.mp4"
+    ingest.write_bytes(make_video(tmp_path, "tennis.mp4").read_bytes())
+    plain = StdioHandler(registry, tmp_path / "data", subject_detector=detector, pose_model=None)
+    result = plain(request("analysis.create", create_params("op-nob-1", "ingest/tennis.mp4")))
+    notes = " ".join(result.get("notes", []))
+    assert "需要指定检测器" in notes
+    prompt = (
+        tmp_path
+        / "data"
+        / "public"
+        / f"projects/{result['task_id']}/v1/records/detector-prompt.json"
+    )
+    payload = json.loads(prompt.read_text(encoding="utf-8"))
+    assert payload["subject_height_ratio"] is None
+
+
 def test_prompts_count_per_media_ref_and_third_time_stops_asking(
     handler: StdioHandler, video: Path
 ) -> None:
